@@ -1,0 +1,108 @@
+theme: jekyll-theme-chirpy
+
+lang: en
+timezone: America/Los_Angeles
+
+title: Mehrab Rahman
+tagline: Principal Engineer. Distributed systems, data engineering, building in public.
+description: >-
+  Mehrab Rahman's personal site. Writing about Go, DuckDB, distributed systems,
+  and the occasional minimalist project.
+
+url: "https://mehrabr.com"
+baseurl: ""
+
+github:
+  username: mehrabr
+
+# social links shown in the sidebar
+social:
+  name: Mehrab Rahman
+  email: mehrabmrahman@gmail.com
+  links:
+    - https://github.com/mehrabr
+
+# sidebar avatar — replace assets/img/avatar.jpg with your photo
+avatar: assets/img/avatar.jpg
+
+# theme mode — comment out to follow system preference
+# theme_mode: dark
+
+# pagination
+paginate: 10
+
+# analytics — add your ID when ready
+# analytics:
+#   google:
+#     id: G-XXXXXXXXXX
+
+# comments — disabled by default, enable when ready
+comments:
+  active: ""
+
+# build settings
+kramdown:
+  footnote_backlink: "&#8617;&#xfe0e;"
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    css_class: highlight
+    span:
+      line_numbers: false
+    block:
+      line_numbers: true
+      start_line: 1
+
+collections:
+  tabs:
+    output: true
+    sort_by: order
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      comments: false
+      toc: true
+  - scope:
+      path: "_tabs"
+      type: tabs
+    values:
+      layout: page
+      permalink: /:title/
+  - scope:
+      path: assets/img/favicons
+    values:
+      swcache: true
+
+sass:
+  style: compressed
+
+compress_html:
+  clippings: all
+  comments: all
+  endings: all
+  profile: false
+  blanklines: false
+  ignore:
+    envs: [development]
+
+exclude:
+  - "*.gem"
+  - "*.gemspec"
+  - docs
+  - tools
+  - README.md
+  - LICENSE
+  - "*.config.js"
+  - package*.json
+
+jekyll-archives:
+  enabled: [categories, tags]
+  layouts:
+    category: category
+    tag: tag
+  permalinks:
+    tag: /tags/:name/
+    category: /categories/:name/
