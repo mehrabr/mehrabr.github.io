@@ -11,8 +11,6 @@ A running list of things I've built or am building, mostly small, mostly in publ
 
 ## waddler
 
-**No-code ETL for the rest of us.**
-
 A Go binary that reads a YAML pipeline file and runs a complete ETL pipeline using
 DuckDB as the query engine. No Python environment, no Spark cluster, no Airflow.
 Describe your sources, write your SQL, declare your output. Run `waddler run pipeline.yml`.
@@ -24,23 +22,6 @@ Built for organizations that have real data needs but not the resources for ente
 tooling: food banks, non-profits, small teams.
 
 [github.com/mehrabr/waddler](https://github.com/mehrabr/waddler) &nbsp;·&nbsp; Go, DuckDB, MotherDuck
-
----
-
-## duckdb-sentinel
-
-*In progress.*
-
-A Go middleware library that intercepts DuckDB queries, captures the full profiling
-operator tree, stores it in a sidecar DuckDB file, and detects plan shape regressions
-between deploys. When an index gets dropped and a sequential scan appears where an
-index scan was before, sentinel fires a callback.
-
-Uses `go-duckdb`'s `ProfilingInfo` API, which nobody has built persistent tooling
-around yet. Includes a Prometheus metrics endpoint and a bubbletea terminal UI showing
-the top slowest query fingerprints.
-
-[github.com/mehrabr/duckdb-sentinel](https://github.com/mehrabr/duckdb-sentinel) &nbsp;·&nbsp; Go, DuckDB
 
 ---
 

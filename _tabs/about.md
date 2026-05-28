@@ -16,10 +16,7 @@ where it gets complicated.
 
 ---
 
-**Currently:** Principal Engineer at Revature, building agentic AI systems and
-cloud-native data platforms.
-
-**Previously:** Senior Engineer and Software Engineer at Revature, leading distributed
+**Previously:** Principal Engineer at Revature, building agentic AI systems and cloud-native data platforms, leading distributed
 systems work on a high-availability Learning Management System.
 
 **Education:** B.S. Computer Science, University of Houston-Victoria.
@@ -28,11 +25,11 @@ systems work on a high-availability Learning Management System.
 
 **Languages:** Go, Python, Java, Kotlin, TypeScript, SQL, Bash
 
-**Infrastructure:** AWS (EKS, Lambda, SageMaker), Kubernetes, Docker, Terraform
+**Infrastructure:** AWS, Kubernetes, Docker, Terraform, Linux
 
-**Data:** DuckDB, MotherDuck, Apache Spark, Databricks, Kafka, ChromaDB
+**Data:** DuckDB, Postgres, Apache Spark, Databricks, Kafka, ChromaDB
 
-**AI:** LangChain, RAG systems, MCP / Agentic AI
+**AI:** LangChain, RAG, MCP
 
 ---
 
