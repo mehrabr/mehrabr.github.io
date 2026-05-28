@@ -23,7 +23,7 @@ social:
     - https://github.com/mehrabr
 
 # sidebar avatar — replace assets/img/avatar.jpg with your photo
-avatar: assets/img/avatar.jpg
+avatar: assets/img/avatar.png
 
 # theme mode — comment out to follow system preference
 # theme_mode: dark
