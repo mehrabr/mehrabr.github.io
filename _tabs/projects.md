@@ -39,4 +39,4 @@ Central, but there is no Spring Boot starter for it. Every Java developer has to
 wire this manually and figure out DuckDB's non-standard connection pooling rules
 themselves.
 
-Go &nbsp;·&nbsp; Java, Spring Boot, DuckDB, Maven Central
+[github.com/mehrabr/spring-boot-starter-duckdb](https://github.com/mehrabr/spring-boot-starter-duckdb) &nbsp;·&nbsp; Java, Spring Boot, DuckDB, Maven Central
