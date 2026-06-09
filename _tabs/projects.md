@@ -78,4 +78,4 @@ live boundary event log showing escape attempts blocked by seccomp profiles,
 per-container CVE drill-down, and the CleanStart remediation for each. Built from direct
 operational experience running this infrastructure at Revature.
 
-[mehrabr.github.io/cleanstart/](https://mehrabr.github.io/cleanstart/) &nbsp;·&nbsp; [github.com/mehrabr/cleanstart-demos](https://github.com/mehrabr/cleanstart-demos) &nbsp;·&nbsp; HTML, Docker, CleanStart
+[mehrabr.github.io/cleanstart/](https://mehrabr.github.io/cleanstart/) &nbsp;·&nbsp; [github.com/mehrabr/cleanstart-demos](https://github.com/mehrabr/mehrabr.github.io/tree/main/cleanstart) &nbsp;·&nbsp; HTML, Docker, CleanStart
