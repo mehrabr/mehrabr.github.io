@@ -40,3 +40,42 @@ wire this manually and figure out DuckDB's non-standard connection pooling rules
 themselves.
 
 [github.com/mehrabr/spring-boot-starter-duckdb](https://github.com/mehrabr/spring-boot-starter-duckdb) &nbsp;·&nbsp; Java, Spring Boot, DuckDB, Maven Central
+
+---
+
+## cleanstart-mcp
+
+A Model Context Protocol server that executes AI agent code inside CleanStart hardened
+container images instead of public base images. When an LLM calls a code execution tool,
+the sandbox it runs in is typically built on `python:3.11` or `node:20` — images carrying
+150–200+ known CVEs. This server defaults to `cleanstart/python`, `cleanstart/node`, and
+`cleanstart/go` instead. Zero CVEs in the sandbox itself.
+
+Exposes five MCP tools: `run_code`, `run_file`, `list_images`, `compare_images`, and
+`scan_image`. Security defaults applied automatically on every execution: all Linux
+capabilities dropped, non-root user, read-only filesystem, network disabled, memory and
+PID limits. No existing MCP sandbox uses CleanStart images — this fills that gap in the
+agentic AI supply chain.
+
+[github.com/mehrabr/cleanstart-mcp](https://github.com/mehrabr/cleanstart-mcp) &nbsp;·&nbsp; Node.js, MCP SDK, Docker, CleanStart
+
+---
+
+## cleanstart-demos
+
+Two browser-based tools built to demonstrate CleanStart's container security value
+proposition interactively — a gap that exists in both CleanStart's and Chainguard's
+public tooling.
+
+**Container Security Analyzer** — enter any public Docker image name, get a simulated
+CVE breakdown by severity, side-by-side size comparison with the CleanStart equivalent,
+an SBOM component view with signing status, and the one-line Dockerfile change required.
+The before/after that runs itself in a customer PoC.
+
+**Sandbox Security Dashboard** — simulates the real-time monitoring layer I built for
+containerized training environments: 24 student containers across multiple cohorts, a
+live boundary event log showing escape attempts blocked by seccomp profiles,
+per-container CVE drill-down, and the CleanStart remediation for each. Built from direct
+operational experience running this infrastructure at Revature.
+
+[mehrabr.github.io/cleanstart/](https://mehrabr.github.io/cleanstart/) &nbsp;·&nbsp; [github.com/mehrabr/cleanstart-demos](https://github.com/mehrabr/cleanstart-demos) &nbsp;·&nbsp; HTML, Docker, CleanStart
