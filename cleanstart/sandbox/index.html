@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrainSec — Sandbox Environment Security Dashboard</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,700;12..96,800&display=swap');
+
+:root {
+  --ink: #0d0f14;
+  --paper: #f5f2eb;
+  --paper2: #ede9e0;
+  --paper3: #e3ddd2;
+  --red: #d63a2f;
+  --red-pale: #f7e8e7;
+  --green: #1a7a4a;
+  --green-pale: #e6f4ed;
+  --amber: #b85c00;
+  --amber-pale: #fdf0e0;
+  --blue: #1a4a8a;
+  --blue-pale: #e6eef8;
+  --muted: #8a8478;
+  --border: #d4cec4;
+  --mono: 'DM Mono', monospace;
+  --sans: 'Bricolage Grotesque', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  min-height: 100vh;
+}
+
+/* Subtle dot grid */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 28px 60px;
+}
+
+/* ── Header ── */
+header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 36px 0 28px;
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-icon {
+  width: 44px; height: 44px;
+  background: var(--ink);
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.brand-text h1 {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.brand-text p {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--green-pale);
+  border: 1px solid var(--green);
+  border-radius: 100px;
+  padding: 5px 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--green);
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 6px; height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 2s ease infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.env-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 10px;
+}
+
+/* ── Control bar ── */
+.control-bar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.cohort-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-right: 4px;
+}
+
+.cohort-btn {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: white;
+  cursor: pointer;
+  color: var(--ink);
+  transition: all 0.15s;
+  font-weight: 500;
+}
+
+.cohort-btn:hover { border-color: var(--ink); background: var(--paper2); }
+.cohort-btn.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+.spacer { flex: 1; }
+
+.refresh-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+}
+
+.refresh-btn:hover { border-color: var(--ink); color: var(--ink); }
+
+/* ── Summary strip ── */
+.summary-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1.5px solid var(--ink);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+
+.summary-cell {
+  background: var(--paper);
+  padding: 20px 18px;
+  transition: background 0.15s;
+}
+
+.summary-cell:hover { background: var(--paper2); }
+
+.cell-val {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -2px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.cell-val.red { color: var(--red); }
+.cell-val.green { color: var(--green); }
+.cell-val.amber { color: var(--amber); }
+.cell-val.blue { color: var(--blue); }
+
+.cell-key {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+/* ── Main grid ── */
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 760px) { .main-grid { grid-template-columns: 1fr; } }
+
+/* ── Cards ── */
+.card {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card-head {
+  padding: 16px 20px;
+  border-bottom: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--paper2);
+}
+
+.card-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.card-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.card-body { padding: 0; }
+
+/* ── Container rows ── */
+.container-row {
+  display: grid;
+  grid-template-columns: 28px 1fr 90px 70px 70px 90px 40px;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.1s;
+  font-size: 13px;
+}
+
+.container-row:last-child { border-bottom: none; }
+.container-row:hover { background: var(--paper); }
+
+.container-row.header-row {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  cursor: default;
+  background: var(--paper2) !important;
+  border-bottom: 1.5px solid var(--border);
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.row-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  text-align: right;
+}
+
+.container-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.container-name span {
+  color: var(--muted);
+  font-weight: 300;
+}
+
+.risk-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 5px;
+  text-align: center;
+  letter-spacing: 0.3px;
+}
+
+.risk-badge.critical { background: var(--red-pale); color: var(--red); border: 1px solid #e8b5b2; }
+.risk-badge.high { background: var(--amber-pale); color: var(--amber); border: 1px solid #e8cba0; }
+.risk-badge.medium { background: #fafae0; color: #7a7000; border: 1px solid #d4d080; }
+.risk-badge.low { background: var(--green-pale); color: var(--green); border: 1px solid #9ed0b4; }
+.risk-badge.clean { background: var(--blue-pale); color: var(--blue); border: 1px solid #a0bce0; }
+
+.cve-count {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-align: right;
+}
+
+.cve-count.red { color: var(--red); }
+.cve-count.amber { color: var(--amber); }
+.cve-count.green { color: var(--green); }
+
+.image-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.isolation-bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.isolation-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--green);
+}
+
+.row-action {
+  font-size: 10px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ── Side panel ── */
+.side-stack { display: flex; flex-direction: column; gap: 20px; }
+
+/* ── Remediation card ── */
+.remediation-list { padding: 0; }
+
+.rem-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.rem-item:last-child { border-bottom: none; }
+.rem-item:hover { background: var(--paper); }
+
+.rem-icon {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  font-size: 13px;
+  margin-top: 1px;
+}
+
+.rem-icon.crit { background: var(--red-pale); }
+.rem-icon.warn { background: var(--amber-pale); }
+.rem-icon.info { background: var(--blue-pale); }
+
+.rem-text p {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 2px;
+}
+
+.rem-text small {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+}
+
+/* ── Image comparison ── */
+.img-compare { padding: 20px; }
+
+.compare-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.compare-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.compare-img-name {
+  font-family: var(--mono);
+  font-size: 11px;
+  width: 110px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.compare-track {
+  flex: 1;
+  height: 18px;
+  background: var(--paper2);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.compare-fill {
+  height: 100%;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding-left: 6px;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 500;
+  color: white;
+  transition: width 1s ease;
+  white-space: nowrap;
+}
+
+.compare-fill.danger { background: var(--red); }
+.compare-fill.safe { background: var(--green); }
+
+.cs-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  padding: 10px 14px;
+  background: var(--green-pale);
+  border: 1px solid var(--green);
+  border-radius: 8px;
+}
+
+.cs-label span {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--green);
+  font-weight: 500;
+}
+
+/* ── Escape attempt log ── */
+.log-body { padding: 0; }
+
+.log-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.log-row:last-child { border-bottom: none; }
+
+.log-time { color: var(--muted); flex-shrink: 0; padding-top: 1px; }
+
+.log-sev {
+  flex-shrink: 0;
+  font-size: 9px;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 1px;
+}
+
+.log-sev.blocked { background: var(--red-pale); color: var(--red); }
+.log-sev.warn { background: var(--amber-pale); color: var(--amber); }
+.log-sev.ok { background: var(--green-pale); color: var(--green); }
+
+.log-msg { color: var(--ink); flex: 1; }
+.log-container { color: var(--muted); }
+
+/* ── Footer ── */
+.dash-footer {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer-note {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.cleanstart-cta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-family: var(--mono);
+  font-size: 11px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: opacity 0.15s;
+}
+
+.cleanstart-cta:hover { opacity: 0.85; }
+
+/* ── Detail drawer ── */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(13,15,20,0.4);
+  z-index: 100;
+  display: none;
+  backdrop-filter: blur(2px);
+}
+
+.drawer-overlay.open { display: block; }
+
+.drawer {
+  position: fixed;
+  right: 0; top: 0; bottom: 0;
+  width: 420px;
+  max-width: 95vw;
+  background: var(--paper);
+  border-left: 2px solid var(--ink);
+  z-index: 101;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer.open { transform: translateX(0); }
+
+.drawer-head {
+  padding: 24px;
+  border-bottom: 1.5px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--paper2);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.drawer-title {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+
+.drawer-meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.close-btn {
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  width: 32px; height: 32px;
+  cursor: pointer;
+  font-size: 16px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+  color: var(--ink);
+}
+
+.close-btn:hover { background: var(--ink); color: var(--paper); }
+
+.drawer-body { padding: 24px; flex: 1; }
+
+.drawer-section { margin-bottom: 24px; }
+
+.drawer-section-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.info-cell {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.info-cell-val {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 2px;
+}
+
+.info-cell-val.red { color: var(--red); }
+.info-cell-val.green { color: var(--green); }
+.info-cell-val.amber { color: var(--amber); }
+
+.info-cell-key {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.cve-list { display: flex; flex-direction: column; gap: 6px; }
+
+.cve-entry {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.cve-entry:hover { border-color: var(--ink); }
+
+.cve-id { font-weight: 500; flex: 1; }
+.cve-score { flex-shrink: 0; }
+.cve-score.red { color: var(--red); }
+.cve-score.amber { color: var(--amber); }
+
+.cve-sev-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cve-sev-dot.critical { background: var(--red); }
+.cve-sev-dot.high { background: var(--amber); }
+.cve-sev-dot.medium { background: #c8b800; }
+
+.remedy-box {
+  background: var(--green-pale);
+  border: 1.5px solid var(--green);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.remedy-box p {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green);
+  margin-bottom: 8px;
+}
+
+.remedy-box code {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--green);
+  display: block;
+  background: rgba(26,122,74,0.08);
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(26,122,74,0.2);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate { animation: fadeIn 0.4s ease both; }
+
+.summary-strip .summary-cell:nth-child(1) { animation: fadeIn 0.3s 0.05s both; }
+.summary-strip .summary-cell:nth-child(2) { animation: fadeIn 0.3s 0.1s both; }
+.summary-strip .summary-cell:nth-child(3) { animation: fadeIn 0.3s 0.15s both; }
+.summary-strip .summary-cell:nth-child(4) { animation: fadeIn 0.3s 0.2s both; }
+.summary-strip .summary-cell:nth-child(5) { animation: fadeIn 0.3s 0.25s both; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">TRAIN<br>SEC</div>
+      <div class="brand-text">
+        <h1>TrainSec Dashboard</h1>
+        <p>Sandbox Container Security Monitor · Built by Mehrab Rahman</p>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="status-pill"><div class="status-dot"></div>Live</div>
+      <div class="env-label">env: training-prod-sg-01</div>
+    </div>
+  </header>
+
+  <!-- Cohort selector -->
+  <div class="control-bar">
+    <span class="cohort-label">Cohort:</span>
+    <button class="cohort-btn active" onclick="setCohort('devops')">DevOps Bootcamp</button>
+    <button class="cohort-btn" onclick="setCohort('cloud')">Cloud Security 101</button>
+    <button class="cohort-btn" onclick="setCohort('k8s')">K8s Advanced</button>
+    <div class="spacer"></div>
+    <button class="refresh-btn" onclick="refreshData()">↻ Refresh</button>
+  </div>
+
+  <!-- Summary strip -->
+  <div class="summary-strip">
+    <div class="summary-cell">
+      <div class="cell-val" id="val-containers">24</div>
+      <div class="cell-key">Active Containers</div>
+    </div>
+    <div class="summary-cell">
+      <div class="cell-val red" id="val-cves">847</div>
+      <div class="cell-key">Total CVEs Inherited</div>
+    </div>
+    <div class="summary-cell">
+      <div class="cell-val red" id="val-critical">63</div>
+      <div class="cell-key">Critical Severity</div>
+    </div>
+    <div class="summary-cell">
+      <div class="cell-val amber" id="val-escapes">7</div>
+      <div class="cell-key">Escape Attempts</div>
+    </div>
+    <div class="summary-cell">
+      <div class="cell-val green" id="val-isolated">21</div>
+      <div class="cell-key">Fully Isolated</div>
+    </div>
+  </div>
+
+  <!-- Main grid -->
+  <div class="main-grid">
+
+    <!-- Container table -->
+    <div class="card animate">
+      <div class="card-head">
+        <div>
+          <div class="card-title">Student Container Environments</div>
+          <div class="card-sub">Click any row to inspect security posture</div>
+        </div>
+        <div class="risk-badge critical" id="cohort-risk">HIGH RISK</div>
+      </div>
+      <div class="card-body">
+        <div class="container-row header-row">
+          <div></div>
+          <div>Container / Student</div>
+          <div>Risk Level</div>
+          <div>CVEs</div>
+          <div>Base Image</div>
+          <div>Isolation</div>
+          <div></div>
+        </div>
+        <div id="container-list"></div>
+      </div>
+    </div>
+
+    <!-- Side panel -->
+    <div class="side-stack">
+
+      <!-- Remediation card -->
+      <div class="card animate" style="animation-delay:0.1s">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Top Remediations</div>
+            <div class="card-sub">Highest-impact fixes</div>
+          </div>
+        </div>
+        <div class="remediation-list">
+          <div class="rem-item">
+            <div class="rem-icon crit">🔴</div>
+            <div class="rem-text">
+              <p>Replace ubuntu:20.04 base</p>
+              <small>Eliminates 312 CVEs across 8 containers</small>
+            </div>
+          </div>
+          <div class="rem-item">
+            <div class="rem-icon warn">🟡</div>
+            <div class="rem-text">
+              <p>Patch OpenSSL 1.1.x → 3.x</p>
+              <small>3 critical CVEs, affects 14 containers</small>
+            </div>
+          </div>
+          <div class="rem-item">
+            <div class="rem-icon warn">🟡</div>
+            <div class="rem-text">
+              <p>Remove curl from prod images</p>
+              <small>Reduces attack surface, 6 containers</small>
+            </div>
+          </div>
+          <div class="rem-item">
+            <div class="rem-icon info">🔵</div>
+            <div class="rem-text">
+              <p>Enable seccomp profiles</p>
+              <small>Blocks 94% of syscall-based escapes</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Image comparison -->
+      <div class="card animate" style="animation-delay:0.15s">
+        <div class="card-head">
+          <div class="card-title">Base Image CVE Comparison</div>
+          <div class="card-sub">Public vs. CleanStart hardened</div>
+        </div>
+        <div class="img-compare">
+          <div class="compare-label">// CVE exposure by image</div>
+
+          <div class="compare-row">
+            <div class="compare-img-name">ubuntu:20.04</div>
+            <div class="compare-track">
+              <div class="compare-fill danger" style="width:90%">312 CVEs</div>
+            </div>
+          </div>
+          <div class="compare-row">
+            <div class="compare-img-name">cs/ubuntu:20.04</div>
+            <div class="compare-track">
+              <div class="compare-fill safe" style="width:2%"></div>
+            </div>
+          </div>
+
+          <div class="compare-row" style="margin-top:8px">
+            <div class="compare-img-name">python:3.9</div>
+            <div class="compare-track">
+              <div class="compare-fill danger" style="width:74%">169 CVEs</div>
+            </div>
+          </div>
+          <div class="compare-row">
+            <div class="compare-img-name">cs/python:3.9</div>
+            <div class="compare-track">
+              <div class="compare-fill safe" style="width:2%"></div>
+            </div>
+          </div>
+
+          <div class="compare-row" style="margin-top:8px">
+            <div class="compare-img-name">node:18</div>
+            <div class="compare-track">
+              <div class="compare-fill danger" style="width:82%">213 CVEs</div>
+            </div>
+          </div>
+          <div class="compare-row">
+            <div class="compare-img-name">cs/node:18</div>
+            <div class="compare-track">
+              <div class="compare-fill safe" style="width:2%"></div>
+            </div>
+          </div>
+
+          <div class="cs-label">
+            <span>✓ CleanStart eliminates 847 CVEs from this cohort's environment</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Escape attempt log -->
+  <div class="card animate" style="animation-delay:0.2s; margin-bottom: 20px;">
+    <div class="card-head">
+      <div>
+        <div class="card-title">Container Boundary Events</div>
+        <div class="card-sub">Privilege escalation attempts, namespace escapes, mount violations · last 60 min</div>
+      </div>
+      <div class="risk-badge high">7 BLOCKED</div>
+    </div>
+    <div class="log-body" id="event-log"></div>
+  </div>
+
+  <!-- Footer -->
+  <div class="dash-footer">
+    <div class="footer-note">
+      Built by Mehrab Rahman · Demonstrates container isolation monitoring for enterprise training environments<br>
+      CVE data representative of public image vulnerability profiles · Escape detection via seccomp + namespace audit
+    </div>
+    <button class="cleanstart-cta" onclick="alert('In production: swap base images to CleanStart → eliminate all 847 CVEs before training begins.')">
+      ✦ Harden with CleanStart
+    </button>
+  </div>
+
+</div>
+
+<!-- Detail drawer -->
+<div class="drawer-overlay" id="overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div>
+      <div class="drawer-title" id="d-title">Container Detail</div>
+      <div class="drawer-meta" id="d-meta">—</div>
+    </div>
+    <button class="close-btn" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="drawer-body" id="d-body"></div>
+</div>
+
+<script>
+const cohorts = {
+  devops: {
+    risk: 'HIGH RISK', riskClass: 'critical',
+    stats: { containers: 24, cves: 847, critical: 63, escapes: 7, isolated: 21 },
+    containers: [
+      { name: 'sandbox', student: 'Ahmad R.', risk: 'critical', cves: 89, image: 'ubuntu:20.04', isolation: 72, cveList: [{id:'CVE-2023-4911',score:7.8,sev:'critical',pkg:'glibc'},{id:'CVE-2023-2650',score:6.5,sev:'high',pkg:'openssl'},{id:'CVE-2022-3821',score:5.5,sev:'medium',pkg:'systemd'},{id:'CVE-2023-5363',score:7.4,sev:'high',pkg:'openssl'}] },
+      { name: 'sandbox', student: 'Priya K.', risk: 'critical', cves: 76, image: 'ubuntu:20.04', isolation: 85, cveList: [{id:'CVE-2023-4911',score:7.8,sev:'critical',pkg:'glibc'},{id:'CVE-2022-27404',score:7.0,sev:'high',pkg:'freetype'},{id:'CVE-2023-2650',score:6.5,sev:'high',pkg:'openssl'}] },
+      { name: 'sandbox', student: 'James L.', risk: 'high', cves: 54, image: 'python:3.9', isolation: 90, cveList: [{id:'CVE-2023-24329',score:7.5,sev:'high',pkg:'urllib3'},{id:'CVE-2022-45061',score:7.5,sev:'high',pkg:'cpython'},{id:'CVE-2023-40217',score:5.3,sev:'medium',pkg:'ssl'}] },
+      { name: 'sandbox', student: 'Sara M.', risk: 'high', cves: 61, image: 'node:18', isolation: 88, cveList: [{id:'CVE-2023-30581',score:7.5,sev:'high',pkg:'node'},{id:'CVE-2023-32002',score:9.8,sev:'critical',pkg:'node'},{id:'CVE-2023-30585',score:7.5,sev:'high',pkg:'node'}] },
+      { name: 'sandbox', student: 'Wei C.', risk: 'medium', cves: 38, image: 'python:3.9', isolation: 95, cveList: [{id:'CVE-2023-24329',score:7.5,sev:'high',pkg:'urllib3'},{id:'CVE-2022-45061',score:7.5,sev:'high',pkg:'cpython'}] },
+      { name: 'sandbox', student: 'Fatima A.', risk: 'medium', cves: 41, image: 'ubuntu:20.04', isolation: 92, cveList: [{id:'CVE-2023-4911',score:7.8,sev:'critical',pkg:'glibc'},{id:'CVE-2022-3821',score:5.5,sev:'medium',pkg:'systemd'}] },
+      { name: 'sandbox', student: 'David T.', risk: 'low', cves: 12, image: 'node:18', isolation: 98, cveList: [{id:'CVE-2023-30581',score:7.5,sev:'high',pkg:'node'}] },
+      { name: 'sandbox', student: 'Mei Z.', risk: 'low', cves: 8, image: 'python:3.9', isolation: 99, cveList: [{id:'CVE-2022-45061',score:7.5,sev:'high',pkg:'cpython'}] },
+    ]
+  },
+  cloud: {
+    risk: 'MEDIUM RISK', riskClass: 'medium',
+    stats: { containers: 16, cves: 421, critical: 28, escapes: 2, isolated: 15 },
+    containers: [
+      { name: 'lab', student: 'Rohan S.', risk: 'high', cves: 67, image: 'ubuntu:22.04', isolation: 80, cveList: [{id:'CVE-2023-4911',score:7.8,sev:'critical',pkg:'glibc'},{id:'CVE-2023-2650',score:6.5,sev:'high',pkg:'openssl'}] },
+      { name: 'lab', student: 'Nina P.', risk: 'high', cves: 58, image: 'nginx:1.22', isolation: 87, cveList: [{id:'CVE-2023-44487',score:7.5,sev:'high',pkg:'nginx'},{id:'CVE-2022-41741',score:7.8,sev:'high',pkg:'nginx'}] },
+      { name: 'lab', student: 'Liam O.', risk: 'medium', cves: 34, image: 'ubuntu:22.04', isolation: 93, cveList: [{id:'CVE-2023-4911',score:7.8,sev:'critical',pkg:'glibc'}] },
+      { name: 'lab', student: 'Aisha B.', risk: 'medium', cves: 29, image: 'nginx:1.22', isolation: 94, cveList: [{id:'CVE-2023-44487',score:7.5,sev:'high',pkg:'nginx'}] },
+      { name: 'lab', student: 'Carlos V.', risk: 'low', cves: 11, image: 'ubuntu:22.04', isolation: 99, cveList: [] },
+      { name: 'lab', student: 'Yuki T.', risk: 'clean', cves: 0, image: 'cs/ubuntu:22.04', isolation: 100, cveList: [] },
+    ]
+  },
+  k8s: {
+    risk: 'LOW RISK', riskClass: 'low',
+    stats: { containers: 32, cves: 198, critical: 9, escapes: 0, isolated: 32 },
+    containers: [
+      { name: 'pod', student: 'Alex K.', risk: 'medium', cves: 22, image: 'alpine:3.17', isolation: 97, cveList: [{id:'CVE-2022-37434',score:9.8,sev:'critical',pkg:'zlib'}] },
+      { name: 'pod', student: 'Soo-Yeon H.', risk: 'medium', cves: 18, image: 'alpine:3.17', isolation: 98, cveList: [{id:'CVE-2022-37434',score:9.8,sev:'critical',pkg:'zlib'}] },
+      { name: 'pod', student: 'Omar F.', risk: 'low', cves: 7, image: 'alpine:3.18', isolation: 99, cveList: [] },
+      { name: 'pod', student: 'Ines M.', risk: 'clean', cves: 0, image: 'cs/alpine:3.18', isolation: 100, cveList: [] },
+      { name: 'pod', student: 'Ben W.', risk: 'clean', cves: 0, image: 'cs/alpine:3.18', isolation: 100, cveList: [] },
+    ]
+  }
+};
+
+const events = [
+  { time: '14:32:07', sev: 'blocked', msg: 'Attempted write to /proc/sysrq-trigger', container: 'Ahmad R. / sandbox' },
+  { time: '14:28:41', sev: 'blocked', msg: 'Privilege escalation via setuid binary detected', container: 'Sara M. / sandbox' },
+  { time: '14:21:15', sev: 'blocked', msg: 'Namespace escape attempt: chroot to /host', container: 'James L. / sandbox' },
+  { time: '14:18:03', sev: 'warn',    msg: 'Unusual network egress to 10.0.0.0/8 — rate limited', container: 'Priya K. / sandbox' },
+  { time: '14:09:55', sev: 'blocked', msg: 'Mount of host /var/run/docker.sock blocked', container: 'Wei C. / sandbox' },
+  { time: '13:57:22', sev: 'warn',    msg: 'Fork bomb pattern detected — container throttled', container: 'David T. / sandbox' },
+  { time: '13:44:10', sev: 'ok',      msg: 'seccomp profile applied — syscall whitelist enforced', container: 'Mei Z. / sandbox' },
+];
+
+let currentCohort = 'devops';
+
+function setCohort(name) {
+  currentCohort = name;
+  document.querySelectorAll('.cohort-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderAll();
+}
+
+function renderAll() {
+  const d = cohorts[currentCohort];
+  // Stats
+  document.getElementById('val-containers').textContent = d.stats.containers;
+  document.getElementById('val-cves').textContent = d.stats.cves;
+  document.getElementById('val-critical').textContent = d.stats.critical;
+  document.getElementById('val-escapes').textContent = d.stats.escapes;
+  document.getElementById('val-isolated').textContent = d.stats.isolated;
+  // Risk badge
+  const rb = document.getElementById('cohort-risk');
+  rb.textContent = d.risk;
+  rb.className = 'risk-badge ' + d.riskClass;
+  // Container list
+  const list = document.getElementById('container-list');
+  list.innerHTML = d.containers.map((c, i) => `
+    <div class="container-row" onclick="openDrawer(${i})" style="animation:fadeIn 0.3s ${i*0.04}s both">
+      <div class="row-num">${String(i+1).padStart(2,'0')}</div>
+      <div class="container-name">${c.student}<span>/${c.name}</span></div>
+      <div><span class="risk-badge ${c.risk}">${c.risk.toUpperCase()}</span></div>
+      <div class="cve-count ${c.cves > 50 ? 'red' : c.cves > 15 ? 'amber' : 'green'}">${c.cves}</div>
+      <div class="image-tag">${c.image}</div>
+      <div>
+        <div class="isolation-bar">
+          <div class="isolation-fill" style="width:${c.isolation}%;background:${c.isolation>95?'var(--green)':c.isolation>85?'var(--amber)':'var(--red)'}"></div>
+        </div>
+      </div>
+      <div class="row-action">→</div>
+    </div>
+  `).join('');
+  renderLog();
+}
+
+function renderLog() {
+  document.getElementById('event-log').innerHTML = events.map(e => `
+    <div class="log-row">
+      <span class="log-time">${e.time}</span>
+      <span class="log-sev ${e.sev}">${e.sev}</span>
+      <span class="log-msg">${e.msg} <span class="log-container">· ${e.container}</span></span>
+    </div>
+  `).join('');
+}
+
+function openDrawer(idx) {
+  const c = cohorts[currentCohort].containers[idx];
+  document.getElementById('d-title').textContent = `${c.student}`;
+  document.getElementById('d-meta').textContent = `${c.name} · ${c.image} · risk: ${c.risk}`;
+
+  const cveSev = c.cveList.reduce((a,v) => { a[v.sev]=(a[v.sev]||0)+1; return a; }, {});
+
+  document.getElementById('d-body').innerHTML = `
+    <div class="drawer-section">
+      <div class="drawer-section-title">// Security Posture</div>
+      <div class="info-grid">
+        <div class="info-cell">
+          <div class="info-cell-val ${c.cves > 0 ? 'red' : 'green'}">${c.cves}</div>
+          <div class="info-cell-key">Total CVEs</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-cell-val ${cveSev.critical ? 'red' : 'green'}">${cveSev.critical || 0}</div>
+          <div class="info-cell-key">Critical</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-cell-val ${c.isolation < 90 ? 'amber' : 'green'}">${c.isolation}%</div>
+          <div class="info-cell-key">Isolation Score</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-cell-val amber">${cveSev.high || 0}</div>
+          <div class="info-cell-key">High Severity</div>
+        </div>
+      </div>
+    </div>
+
+    ${c.cveList.length > 0 ? `
+    <div class="drawer-section">
+      <div class="drawer-section-title">// Known CVEs in Base Image</div>
+      <div class="cve-list">
+        ${c.cveList.map(v => `
+          <div class="cve-entry">
+            <div class="cve-sev-dot ${v.sev}"></div>
+            <div class="cve-id">${v.id}<br><span style="color:var(--muted);font-size:9px">${v.pkg}</span></div>
+            <div class="cve-score ${v.score >= 7 ? 'red' : 'amber'}">CVSS ${v.score}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>` : ''}
+
+    <div class="drawer-section">
+      <div class="drawer-section-title">// Recommended Fix</div>
+      <div class="remedy-box">
+        <p>✓ Replace base image with CleanStart equivalent</p>
+        <code>FROM ${c.image.startsWith('cs/') ? c.image : 'cleanstart/' + c.image}</code>
+        ${c.cves > 0 ? `<div style="margin-top:8px;font-family:var(--mono);font-size:10px;color:var(--green)">→ Eliminates all ${c.cves} CVEs. No other code changes required.</div>` : '<div style="margin-top:8px;font-family:var(--mono);font-size:10px;color:var(--green)">→ Already using CleanStart. Zero CVEs confirmed.</div>'}
+      </div>
+    </div>
+  `;
+
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+function refreshData() {
+  const btn = document.querySelector('.refresh-btn');
+  btn.textContent = '↻ Refreshing...';
+  setTimeout(() => { btn.textContent = '↻ Refresh'; }, 800);
+}
+
+renderAll();
+</script>
+</body>
+</html>

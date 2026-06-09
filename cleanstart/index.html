@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CleanStart Tools — Mehrab Rahman</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500&family=Geist:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg: #0a0a0a;
+  --surface: #111;
+  --border: #222;
+  --border2: #2a2a2a;
+  --text: #e8e8e8;
+  --muted: #555;
+  --muted2: #777;
+  --gold: #c9a84c;
+  --green: #3d9e6a;
+  --blue: #4a7fc1;
+  --mono: 'Geist Mono', monospace;
+  --sans: 'Geist', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  padding: 0 24px 80px;
+}
+
+/* grid bg */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* header */
+header {
+  padding: 64px 0 48px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 56px;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+
+h1 {
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 700;
+  letter-spacing: -2px;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+h1 .dim { color: var(--muted2); font-weight: 300; }
+
+.intro {
+  font-size: 15px;
+  color: var(--muted2);
+  line-height: 1.7;
+  max-width: 580px;
+  margin-bottom: 24px;
+}
+
+.author-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.author-line a {
+  color: var(--gold);
+  text-decoration: none;
+}
+
+.author-line a:hover { text-decoration: underline; }
+
+.sep { color: var(--border2); }
+
+/* section label */
+.section-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* cards */
+.cards { display: flex; flex-direction: column; gap: 16px; margin-bottom: 56px; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.card:hover { border-color: var(--gold); }
+
+.card-inner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 24px;
+  padding: 28px 32px;
+}
+
+@media (max-width: 560px) {
+  .card-inner { grid-template-columns: 1fr; }
+  .card-action { display: none; }
+}
+
+.card-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.card-tag.green { background: rgba(61,158,106,0.12); color: var(--green); border: 1px solid rgba(61,158,106,0.25); }
+.card-tag.blue  { background: rgba(74,127,193,0.12); color: var(--blue);  border: 1px solid rgba(74,127,193,0.25); }
+.card-tag.gold  { background: rgba(201,168,76,0.1);  color: var(--gold);  border: 1px solid rgba(201,168,76,0.25); }
+
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  margin-bottom: 6px;
+}
+
+.card-desc {
+  font-size: 13px;
+  color: var(--muted2);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.card-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: #1a1a1a;
+  border: 1px solid var(--border2);
+  color: var(--muted2);
+}
+
+.card-action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.action-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 8px 16px;
+  border-radius: 7px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.15s;
+  display: block;
+  text-align: center;
+}
+
+.action-btn.primary {
+  background: var(--gold);
+  color: #000;
+  font-weight: 500;
+}
+
+.action-btn.primary:hover { background: #d4b060; }
+
+.action-btn.secondary {
+  background: transparent;
+  color: var(--muted2);
+  border: 1px solid var(--border2);
+}
+
+.action-btn.secondary:hover { border-color: var(--muted2); color: var(--text); }
+
+/* MCP card — different layout */
+.mcp-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 28px 32px;
+  margin-bottom: 56px;
+}
+
+.mcp-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.mcp-title { font-size: 18px; font-weight: 600; letter-spacing: -0.4px; margin-bottom: 6px; }
+.mcp-desc { font-size: 13px; color: var(--muted2); line-height: 1.6; }
+
+.code-block {
+  background: #0d0d0d;
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 16px 20px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.9;
+  overflow-x: auto;
+  color: var(--muted2);
+  margin-top: 16px;
+}
+
+.code-block .cm  { color: #444; font-style: italic; }
+.code-block .kw  { color: var(--blue); }
+.code-block .str { color: var(--green); }
+.code-block .hl  { color: var(--gold); }
+
+/* context box */
+.context-box {
+  background: rgba(201,168,76,0.06);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin-bottom: 56px;
+}
+
+.context-box p {
+  font-size: 13px;
+  color: var(--muted2);
+  line-height: 1.7;
+  font-style: italic;
+}
+
+.context-box strong { color: var(--gold); font-style: normal; }
+
+/* footer */
+footer {
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+footer a { color: var(--muted2); text-decoration: none; }
+footer a:hover { color: var(--gold); }
+
+/* fade in */
+@keyframes up { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+.card, .mcp-card, .context-box { animation: up 0.4s ease both; }
+.card:nth-child(2) { animation-delay: 0.05s; }
+.card:nth-child(3) { animation-delay: 0.1s; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">// Interview Demo Suite</div>
+    <h1>CleanStart Tools<br><span class="dim">by Mehrab Rahman</span></h1>
+    <p class="intro">
+      Three tools built in 48 hours to demonstrate product intuition for
+      CleanStart's container security platform — and to fill gaps that don't
+      yet exist in the market.
+    </p>
+    <div class="author-line">
+      <a href="https://mehrabr.com">mehrabr.com</a>
+      <span class="sep">·</span>
+      <a href="https://github.com/mehrabr/cleanstart-demos">github.com/mehrabr/cleanstart-demos</a>
+      <span class="sep">·</span>
+      <span>Built June 2026</span>
+    </div>
+  </header>
+
+  <div class="section-label">// Interactive Demos</div>
+
+  <div class="cards">
+
+    <a class="card" href="./analyzer/">
+      <div class="card-inner">
+        <div>
+          <div class="card-tag green">⬡ Live Demo</div>
+          <div class="card-title">Container Security Analyzer</div>
+          <div class="card-desc">
+            Enter any public Docker image and see a simulated CVE scan — 
+            critical/high/medium breakdown, size comparison, SBOM component 
+            list, and the one-line Dockerfile fix. The before/after that sells 
+            itself in a customer PoC.
+          </div>
+          <div class="card-chips">
+            <span class="chip">CVE comparison</span>
+            <span class="chip">SBOM viewer</span>
+            <span class="chip">Pipeline diagram</span>
+            <span class="chip">Cosign verification</span>
+          </div>
+        </div>
+        <div class="card-action">
+          <span class="action-btn primary">Open demo →</span>
+          <a class="action-btn secondary" href="https://github.com/mehrabr/cleanstart-demos/blob/main/analyzer/index.html" onclick="event.stopPropagation()">View source</a>
+        </div>
+      </div>
+    </a>
+
+    <a class="card" href="./sandbox/">
+      <div class="card-inner">
+        <div>
+          <div class="card-tag blue">⬡ Live Demo</div>
+          <div class="card-title">Sandbox Environment Security Dashboard</div>
+          <div class="card-desc">
+            Simulates the real-time security monitoring layer I built for
+            containerized training environments at Revature. 24 student containers,
+            live boundary event log, per-container CVE drill-down, and the
+            CleanStart remediation for each. Shows the operational problem CleanStart
+            solves from the inside.
+          </div>
+          <div class="card-chips">
+            <span class="chip">Multi-cohort</span>
+            <span class="chip">Escape detection</span>
+            <span class="chip">seccomp profiles</span>
+            <span class="chip">RBAC isolation</span>
+          </div>
+        </div>
+        <div class="card-action">
+          <span class="action-btn primary">Open demo →</span>
+          <a class="action-btn secondary" href="https://github.com/mehrabr/cleanstart-demos/blob/main/sandbox/index.html" onclick="event.stopPropagation()">View source</a>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="section-label">// MCP Server</div>
+
+  <div class="mcp-card">
+    <div class="mcp-header">
+      <div>
+        <div class="card-tag gold">⬡ Open Source Tool</div>
+        <div class="mcp-title">cleanstart-mcp</div>
+        <div class="mcp-desc">
+          A Model Context Protocol server that executes AI agent code inside 
+          CleanStart hardened containers — not public base images. Every existing 
+          MCP sandbox defaults to python:3.11, node:20, etc. This one defaults 
+          to cleanstart/*. Zero CVEs in the sandbox itself.
+        </div>
+      </div>
+      <a class="action-btn primary" href="https://github.com/mehrabr/cleanstart-mcp" style="align-self:flex-start">View on GitHub →</a>
+    </div>
+
+    <div class="code-block">
+<span class="cm"># Install</span>
+git clone https://github.com/mehrabr/cleanstart-mcp
+<span class="kw">cd</span> cleanstart-mcp && npm install
+
+<span class="cm"># Add to Claude Desktop (~/.../Claude/claude_desktop_config.json)</span>
+{
+  <span class="str">"mcpServers"</span>: {
+    <span class="hl">"cleanstart"</span>: {
+      <span class="str">"command"</span>: <span class="str">"node"</span>,
+      <span class="str">"args"</span>: [<span class="str">"/path/to/cleanstart-mcp/server.mjs"</span>]
+    }
+  }
+}
+
+<span class="cm"># Ask Claude: "Run this Python code in a CleanStart container"</span>
+<span class="cm"># → executes inside cleanstart/python:latest · 0 CVEs · all caps dropped</span>
+    </div>
+  </div>
+
+  <div class="context-box">
+    <p>
+      <strong>Why these tools exist:</strong> CleanStart has 4 public GitHub repos and no 
+      interactive comparison tooling. Chainguard has backend data pipelines and static 
+      comparison docs — but no browser-based demo a prospect can open in 30 seconds. 
+      These fill that gap. The MCP server addresses a separate unbuilt layer: every 
+      existing AI agent sandbox defaults to public images with hundreds of CVEs. 
+      None of this was assigned — it was built because it was missing.
+    </p>
+  </div>
+
+  <footer>
+    <span>Mehrab Rahman · <a href="https://mehrabr.com">mehrabr.com</a> · <a href="mailto:mehrabmrahman@gmail.com">mehrabmrahman@gmail.com</a></span>
+    <span><a href="https://github.com/mehrabr/cleanstart-demos">cleanstart-demos</a> · <a href="https://github.com/mehrabr/cleanstart-mcp">cleanstart-mcp</a></span>
+  </footer>
+
+</div>
+</body>
+</html>
