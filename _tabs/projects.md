@@ -9,6 +9,26 @@ A running list of things I've built or am building, mostly small, mostly in publ
 
 ---
 
+## holdout
+
+A Python tool that asks several LLMs to reason through a question independently, each
+committing a written rationale and a yes/no vote before seeing any of the others. It
+keeps every rationale — including the losing one — as a durable record, and when the
+models disagree it returns the specific point of disagreement rather than forcing an
+answer. No synthesis step, no merged "best" response, no accuracy claim.
+
+Most multi-model tools dissolve disagreement into one answer. holdout preserves it,
+on the bet that for decisions with no verifiable answer, the reasoning that didn't win
+is exactly what's worth keeping for the postmortem.
+
+Built for the decisions that don't have a right answer: should we rewrite this service,
+is this trade-off acceptable, do we ship. The kind where "it depends" is the honest
+answer and the dissent is the point.
+
+[github.com/mehrabr/holdout](https://github.com/mehrabr/holdout) &nbsp;·&nbsp; Python, LLMs
+
+---
+
 ## waddler
 
 A Go binary that reads a YAML pipeline file and runs a complete ETL pipeline using
@@ -43,7 +63,7 @@ themselves.
 
 ---
 
-## cleanstart-mcp
+## cleanstart-demos
 
 A Model Context Protocol server that executes AI agent code inside CleanStart hardened
 container images instead of public base images. When an LLM calls a code execution tool,
@@ -57,11 +77,7 @@ capabilities dropped, non-root user, read-only filesystem, network disabled, mem
 PID limits. No existing MCP sandbox uses CleanStart images — this fills that gap in the
 agentic AI supply chain.
 
-[github.com/mehrabr/cleanstart-mcp](https://github.com/mehrabr/cleanstart-mcp) &nbsp;·&nbsp; Node.js, MCP SDK, Docker, CleanStart
-
----
-
-## cleanstart-demos
+Also:
 
 Two browser-based tools built to demonstrate CleanStart's container security value
 proposition interactively — a gap that exists in both CleanStart's and Chainguard's
@@ -78,4 +94,7 @@ live boundary event log showing escape attempts blocked by seccomp profiles,
 per-container CVE drill-down, and the CleanStart remediation for each. Built from direct
 operational experience running this infrastructure at Revature.
 
-[mehrabr.github.io/cleanstart/](https://mehrabr.github.io/cleanstart/) &nbsp;·&nbsp; [github.com/mehrabr/cleanstart-demos](https://github.com/mehrabr/mehrabr.github.io/tree/main/cleanstart) &nbsp;·&nbsp; HTML, Docker, CleanStart
+[mehrabr.github.io/cleanstart/](https://mehrabr.github.io/cleanstart/)
+
+[github.com/mehrabr/cleanstart-mcp](https://github.com/mehrabr/cleanstart-mcp) &nbsp;·&nbsp; Node.js, MCP SDK, Docker, CleanStart
+

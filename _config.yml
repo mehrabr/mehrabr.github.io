@@ -40,6 +40,9 @@ paginate: 10
 comments:
   active: ""
 
+# show posts dated today even if the build time is earlier (UTC offset issue)
+future: true
+
 # build settings
 kramdown:
   footnote_backlink: "&#8617;&#xfe0e;"
