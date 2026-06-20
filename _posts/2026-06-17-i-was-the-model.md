@@ -32,6 +32,6 @@ In my room it went to judgment, and I know because I saw it later, at a remove. 
 
 I want that to be the lesson, which is a good reason to distrust it. But the ones who came in frozen had mostly been shown things working. The attention can become judgment, and it needs a real process to copy. I'm betting on anyone who got to watch the work go wrong and come back, and less sure about the ones who only saw it land clean.
 
-None of this is a catastrophe. It is the ordinary trade. A tool makes a hard thing skippable, and the craft behind it goes quiet. Some years on, the work starts missing a quality nobody can name, and people go looking for whoever still remembers how it was done. When animation gave up the painted cel, the look of it took years to approximate, and only because people had studied what it was while it was still ordinary.
+It is the ordinary trade. A tool makes a hard thing skippable, and the craft behind it goes quiet. Some years on, the work starts missing a quality nobody can name, and people go looking for whoever still remembers how it was done. When animation gave up the painted cel, the look of it took years to approximate, and only because people had studied what it was while it was still ordinary.
 
-The thing to keep is the room: a person doing the work in front of you, badly and then less badly, who made you reason out every line before it would appear. That is what to come back for, once we notice it is gone.
+The thing to keep is the room: a person doing the work in front of you, badly and then less badly, who made you reason out every line before it would appear.

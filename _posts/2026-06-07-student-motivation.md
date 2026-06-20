@@ -58,7 +58,7 @@ And it produces students who follow instructions well and freeze without them. W
 
 When you evaluate students individually on artifacts, you get students who optimize for artifacts. They copy when stuck rather than ask, because asking reveals a gap and the gap affects the grade. They avoid hard problems because hard problems look bad before they look good. These are rational decisions. That's the problem.
 
-What I tried instead: measure throughput of work, evaluate the team rather than the individual, make the shared artifact the unit of accountability. If the team shipped the feature, they did well. If a PR broke the build, the team fixed it together. This is harder to grade. It produces developers who can work with other people.
+I measured throughput of work, evaluated teams rather than individuals, made the shared artifact the unit of accountability. If the team shipped the feature, they did well. If a PR broke the build, the team fixed it together. This is harder to grade. It produces developers who can work with other people.
 
 ---
 

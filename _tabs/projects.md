@@ -63,6 +63,44 @@ themselves.
 
 ---
 
+## marchland
+
+A historical battle and campaign simulation where you command armies across career seasons —
+muster, march, siege, battle, winter court. Every outcome replays identically from the same seed.
+Every death has a cause you can read.
+
+Built around one thesis: history is hard to predict and easy to explain. Three design decisions
+follow from it. First, no quality coefficients — every difference between forces must have a
+receipt, a changeable in-world fact (drill-days, calories, armor, roads, bonds) that an automated
+audit checks against every data file. Second, a full trace: time, killer, cause (melee · volley ·
+pursuit · thirst · disease), location — every rout records the appraisal cues that triggered it.
+Third, you command; you don't pilot. Orders travel at rider speed. Men appraise them against what
+they can see. You can't undo a dispatch once sent, and your patron evaluates based on what you
+reported, not what actually happened.
+
+[github.com/mehrabr/marchland](https://github.com/mehrabr/marchland) &nbsp;·&nbsp; Python, numpy
+
+---
+
+## agentic-duckdb-analyst
+
+A natural-language-to-SQL agent over DuckDB that doesn't trust its own first answer.
+
+Most text-to-SQL systems execute a query and return the result. This one runs the result through
+a four-tier verification ladder before surfacing it: an execution guard that catches parse and type
+errors for free, a result sanity check that detects empty or degenerate outputs, an intent
+alignment step that back-translates the SQL to verify it answers the right question, and a
+self-consistency check that samples independent responses and measures agreement. The system
+also distinguishes between answerable questions, unanswerable ones it should decline, and
+ambiguous prompts with multiple valid interpretations — and is evaluated on all three.
+
+Ships with a 64-question gold eval set and reports results honestly, including known weaknesses
+in order-sensitive comparison and schema retrieval.
+
+[github.com/mehrabr/agentic-duckdb-analyst](https://github.com/mehrabr/agentic-duckdb-analyst) &nbsp;·&nbsp; Python, DuckDB, Claude
+
+---
+
 ## cleanstart-demos
 
 A Model Context Protocol server that executes AI agent code inside CleanStart hardened

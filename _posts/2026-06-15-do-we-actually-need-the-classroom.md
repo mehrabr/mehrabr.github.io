@@ -32,8 +32,6 @@ When someone got stuck I'd run the session as a mob with the roles reversed. The
 
 "But they have to type it themselves to learn." They did, later, on their own. Typing was never the part they couldn't do.
 
-I was questioning the delivery, and I think the change was right. But the delivery was infrastructure too, and I had improved it without touching the metric one layer above it.
-
 ---
 
 III.
@@ -43,8 +41,6 @@ That metric was the cohort itself. Not whether it was taught well, but whether a
 The clients asked it. Once the junior work could be done with a tool they needed fewer juniors, and a cohort is how you train them. The question I'd been applying to the classroom by hand, one piece at a time, was being asked of the whole classroom at once, from outside, by people holding a tool built to ask it faster than I ever could.
 
 It is the same question at two scales. I ran it from the inside, carefully, one cluster at a time. The clients ran it on the entire system in a quarter. I was standing on the layer it reached.
-
-So are you. The infrastructure you keep questioning, to stay the person who questions infrastructure, is a metric someone a layer above you has not checked yet.
 
 ---
 

@@ -12,7 +12,7 @@ I ended that post announcing `waddler relay`: a hub mode, a local server, remote
 
 ---
 
-## I
+I.
 
 The relay was mine. I'd written the networking by hand. A small HTTP server took a body of rows and wrote them into a file-backed DuckDB; a client serialized a pipeline's output and sent it across. I did that on purpose. Quack was new and I wanted to know what it solved before I leaned on it, and the way I learn that is to build the naive version and find where it hurts.
 
@@ -20,7 +20,7 @@ It hurt where these things always hurt. Two DuckDB instances have a lot to agree
 
 ---
 
-## II
+II.
 
 "You could have just finished your protocol." I could have. DuckDB had already finished a better one.
 
@@ -30,7 +30,7 @@ So I deleted it. The `relay` package, the hand-rolled server, the serialization,
 
 ---
 
-## III
+III.
 
 What replaced it is DuckDB's. The `quack` output attaches the hub and writes to it:
 
@@ -53,7 +53,7 @@ call := fmt.Sprintf(
 
 ---
 
-## IV
+IV.
 
 It compiled clean, then fell over the first time it ran, and the reason was dumber than the protocol.
 
@@ -80,7 +80,7 @@ A too-old build now fails on startup with the exact `go get` line that fixes it,
 
 ---
 
-## V
+V.
 
 The experiment failed, and that was fine. I'd built the relay to feel the problem myself, and by the time it stopped working it had already shown me what Quack has to carry. Finishing with DuckDB's own protocol was the obvious way to close the loose end, so that's what I shipped.
 
