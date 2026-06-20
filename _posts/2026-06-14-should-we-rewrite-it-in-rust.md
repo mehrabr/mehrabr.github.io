@@ -12,7 +12,7 @@ I built a tool to stop language models from agreeing with each other too easily.
 
 I.
 
-The thing that unsettles me about where these tools are going is how agreeably they get things wrong together.
+What unsettles me about where these tools are going is how agreeably they get things wrong together.
 
 Multi-agent systems are the fashion now, and they cascade toward agreement: one model reads another, finds reasons to fall in line, and the room converges. Synthesis tools do it in one shot — several models, a judge, the strongest parts merged into a single answer. On a question that has a right answer this works, and the numbers back it up. Self-consistency and ensembling buy double-digit accuracy gains. I'm not going to pretend otherwise.
 

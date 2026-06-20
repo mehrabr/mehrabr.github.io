@@ -74,6 +74,4 @@ There's a Java HTTP server in my teaching repo that implements about fifteen per
 
 ---
 
-Every workaround I ran through was solving the logistics problem.
-
-The install hell was a jank dev environment. Jank doesn't need to be good. It needs to be legible.
+The install hell was a jank dev environment. Jank only needs to be legible.

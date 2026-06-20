@@ -85,10 +85,10 @@ _get ()
 }
 ```
 
-Call it: `_get http://example.com/`. This is curl. The real one handles TLS, redirects, a hundred protocols. The operation is the same.
+Call it: `_get http://example.com/`. The real curl handles TLS, redirects, a hundred protocols. The operation is the same.
 
 ---
 
 The typical HTTP curriculum skips this because the people who wrote it had internalized it completely. By Spring or Express, the "everything is a file" assumption was infrastructure nobody thought to mention.
 
-The answer to the `cd` question was already in the tools. The students had the right model. Nobody told them.
+The students asking to `cd` into another computer had the right model. The file abstraction extends that far. Nobody thought to say so.

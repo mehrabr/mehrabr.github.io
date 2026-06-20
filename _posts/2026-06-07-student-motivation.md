@@ -28,13 +28,11 @@ II.
 
 The waiting room I built in week one was an autonomy failure, but not because I gave them too much structure. Because I gave them none and called it freedom.
 
-Autonomy isn't freedom. This distinction wrecked me when I finally understood it. Autonomy is something to push against. You can't feel agency in a void. Freedom is an empty room with no exits.
+Autonomy isn't freedom. Autonomy is something to push against. You can't feel agency in a void. Freedom is an empty room with no exits.
 
 What I'd given students was infinite options and called it choice. "Build whatever you want" sounds generous until you realize that generating constraints from scratch is a separate skill, a hard one, and I hadn't taught it. They were stuck because a choice needs something to push against. There was nothing.
 
 What actually worked was a constrained brief with fixed quality requirements and open feature scope. Something like: this API exists, it doesn't do X, build a CLI that does. Test coverage above 80%, automated pipeline, interactive and non-interactive modes — fixed. What the tool does, what data it manages, who the imagined user is — theirs. The quality bar gave their choices weight; the open feature scope gave them something to own. Neither alone would have done it.
-
-The constraint was the gift. It just didn't look like one.
 
 ---
 
@@ -52,13 +50,9 @@ The students who formed what I started thinking of as specialization nodes — t
 
 IV.
 
-Douglas McGregor's Theory X says workers dislike work and have to be controlled and measured. Theory Y says they'll self-direct if the conditions exist.
+Douglas McGregor's Theory X says workers dislike work and have to be controlled and measured. Theory Y says they'll self-direct if the conditions exist. Autonomy, cohesion, and competence together produce volition — Theory Y, but treated as a design requirement rather than a belief.
 
-Autonomy + Cohesion + Competence = Volition. That's Theory Y as a design requirement, not a belief.
-
-Most bootcamp instructors believe Theory Y. Their curricula are Theory X. The proof isn't in beliefs. It's in what the structure rewards.
-
-What gets incentivized: submitting things on time, producing the right output. What happens when a student struggles: scaffolding until they produce the deliverable. The deliverable is always the point. That's Theory X with a friendly tone.
+Most bootcamp instructors believe Theory Y. Their curricula are Theory X. The structure rewards submitting things on time, producing the right output; when a student struggles, you scaffold until they produce the deliverable. The deliverable is always the point. Theory X with a friendly tone.
 
 And it produces students who follow instructions well and freeze without them. Which is the situation waiting for them on day one of a job, where the backlog is full of vague tickets and the senior dev is in a meeting.
 

@@ -14,7 +14,7 @@ DuckDB released a blog post a couple weeks ago about something called the Quack 
 
 You can start a DuckDB server with `CALL quack_serve(port := 9494)`, and then connect to it from another DuckDB instance with `ATTACH 'quack:myserver:9494' AS remote`. After that you can `CREATE TABLE remote.mytable AS (SELECT ...)` and it works. Authentication uses a token you set at startup. The protocol is HTTP under the hood, single round trip per query.
 
-But what to build with it: it's not yet recommended for direct internet exposure without SSL termination in front, it binds to localhost by default, and the token is the only auth primitive in v1.
+Building with it has some constraints: it's not yet recommended for direct internet exposure without SSL termination in front, it binds to localhost by default, and the token is the only auth primitive in v1.
 
 ---
 
@@ -24,7 +24,7 @@ Adding `type: quack` as an output to waddler is straightforward. The MotherDuck 
 
 But I kept thinking about the use case. Waddler already targets small orgs that can't afford enterprise data tooling. MotherDuck is the right answer for those orgs when they want cloud storage and don't want to manage infrastructure. But what about orgs that have a VPS, or a local server, or a single machine in the back room, and want shared data without a cloud account? That's a real category of org that waddler currently can't serve well.
 
-Quack makes it possible to build something for that category. Not by pointing one waddler at a remote DuckDB file, but by letting multiple waddler instances, running on different machines, all push their results into a shared DuckDB file on a central server. The use case I kept coming back to: a regional organization with several branch offices, each running waddler on whatever laptop is available, pushing their weekly data to a hub where a coordinator can query everything together.
+Quack makes it possible to build something for that category. Multiple waddler instances, running on different machines, could all push their results into a shared DuckDB file on a central server. The use case I kept coming back to: a regional organization with several branch offices, each running waddler on whatever laptop is available, pushing their weekly data to a hub where a coordinator can query everything together.
 
 ---
 
@@ -89,4 +89,4 @@ Install:
 CGO_ENABLED=1 go install github.com/mehrabr/waddler/cmd/waddler@latest
 ```
 
-If you try it out and hit something unexpected I'd genuinely like to know. The relay especially is new enough that I'd expect edge cases I haven't seen yet.
+If you try it out and hit something unexpected I'd genuinely like to know.

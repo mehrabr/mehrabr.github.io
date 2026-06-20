@@ -28,13 +28,13 @@ It worked fine, but building it made me realize something a little embarrassing:
 
 I'd used DuckDB before but mostly as a query tool over Parquet files, not as something to build on top of. The more I dug into it the more I realized it's kind of a different category of thing than what I was mentally filing it under.
 
-The comparison that clicked for me: SQLite is a relational database in a file, optimized for the transactional patterns that show up in applications, lots of small reads and writes, indexed lookups, that kind of thing. DuckDB is an analytical database in a file, optimized for the patterns that show up in data engineering: wide tables, aggregations, joins across files of different formats. Things that would be painful in SQLite, and that in Spark require spinning up a cluster just to get started.
+SQLite is a relational database in a file, optimized for the transactional patterns that show up in applications, lots of small reads and writes, indexed lookups, that kind of thing. DuckDB is an analytical database in a file, optimized for the patterns that show up in data engineering: wide tables, aggregations, joins across files of different formats. Things that would be painful in SQLite, and that in Spark require spinning up a cluster just to get started.
 
-The part that actually surprised me was how much DuckDB handles at the file level. You don't load a CSV into DuckDB and then query it; you just query the CSV directly, and DuckDB figures out the schema, reads it lazily, and processes it with a vectorized engine. Same for Parquet, JSON, S3-hosted files. I kept expecting to hit a step where I had to do some plumbing and there just... wasn't one.
+What surprised me was how much DuckDB handles at the file level. You don't load a CSV into DuckDB and then query it; you just query the CSV directly, and DuckDB figures out the schema, reads it lazily, and processes it with a vectorized engine. Same for Parquet, JSON, S3-hosted files. I kept expecting to hit a step where I had to do some plumbing and there just... wasn't one.
 
-`GROUP BY ALL` is also genuinely nice. Instead of listing every non-aggregate column in your GROUP BY clause you just say ALL and DuckDB infers it. Small thing, but it reduces a whole category of typos in user-written SQL, which matters a lot when your target user isn't a data engineer writing this themselves.
+`GROUP BY ALL` is also genuinely nice. Instead of listing every non-aggregate column in your GROUP BY clause you just say ALL and DuckDB infers it. It reduces a whole category of typos in user-written SQL, which matters a lot when your target user isn't a data engineer writing this themselves.
 
-Is DuckDB the right choice for every ETL workload? Obviously not, and I'm curious where the actual ceiling is in practice. The docs say it handles hundreds of gigabytes on a laptop, which sounds right to me, but I haven't really stress-tested it. For the small-org use case I was targeting it seemed like the right call. Anyone pushed it to its limits on a real workload?
+DuckDB isn't right for every ETL workload; I'm genuinely curious where the ceiling is in practice. The docs say it handles hundreds of gigabytes on a laptop, which sounds right to me, but I haven't really stress-tested it. For the small-org use case I was targeting it seemed like the right call. Has anyone pushed it to its limits on a real workload?
 
 ---
 
@@ -42,7 +42,7 @@ Is DuckDB the right choice for every ETL workload? Obviously not, and I'm curiou
 
 I went back and forth on this. I had the Python version already working. I know Python well. Going back to Go meant brushing up on things I'd let go rusty: the module system has changed a lot since the last time I built a standalone tool, and I had to relearn some stdlib patterns like `log/slog` and how the `database/sql` interface works for non-standard drivers like go-duckdb.
 
-The thing that pushed me toward Go was distribution. A Python tool means the user has to have Python, and the right version of Python, and a virtualenv, and `pip install` has to work. For the user I was imagining, a volunteer data coordinator at a food bank, someone with CSVs and no engineering background, that chain has a lot of failure points. A Go binary is one file. You download it and run it. That story is much simpler.
+Distribution pushed me toward Go. A Python tool means the user has to have Python, and the right version of Python, and a virtualenv, and `pip install` has to work. For the user I was imagining, a volunteer data coordinator at a food bank, someone with CSVs and no engineering background, that chain has a lot of failure points. A Go binary is one file. You download it and run it.
 
 Go also forced me to think carefully about structure in a way Python doesn't really. The `cmd/` directory for the binary, `internal/` for packages you don't want exported, `testdata/` for fixtures; these are conventions the community has settled on and I think they're good ones, but Go doesn't enforce them so you have to consciously choose them. I followed them mostly because I was building something I hoped other engineers would read, and there's value in code that looks like what people expect.
 
@@ -155,4 +155,4 @@ Source types right now: CSV, JSON, Parquet, Postgres, MotherDuck. Output types: 
 
 Things I'm still genuinely unsettled on: inline SQL vs file references for complex transforms, plugin-style source registration vs the current switch statement, hard validation failure vs warn-only mode, whether natural-language scheduling presets are worth adding, and pre-built CGO binaries. If you've thought about any of these or have opinions from building something similar, I'd really like to hear it.
 
-The broader question I started with, how much of the complexity in enterprise data engineering is actually necessary, I think waddler is a small piece of evidence that the answer is "less than we act like it is." Whether waddler is the right abstraction on top of DuckDB, or whether there are better ones, I'm not sure. But small projects have a way of teaching you more than you expect, and this one already has.
+The broader question I started with, how much of the complexity in enterprise data engineering is actually necessary, I think waddler is a small piece of evidence that the answer is "less than we act like it is." Whether waddler is the right abstraction on top of DuckDB, or whether there are better ones, I'm not sure.
