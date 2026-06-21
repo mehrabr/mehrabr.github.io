@@ -25,6 +25,8 @@ Built for the decisions that don't have a right answer: should we rewrite this s
 is this trade-off acceptable, do we ship. The kind where "it depends" is the honest
 answer and the dissent is the point.
 
+[mehrabr.github.io/holdout/](https://mehrabr.github.io/holdout/)
+
 [github.com/mehrabr/holdout](https://github.com/mehrabr/holdout) &nbsp;·&nbsp; Python, LLMs
 
 ---
