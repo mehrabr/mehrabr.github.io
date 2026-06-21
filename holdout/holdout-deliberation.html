@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>holdout — a deliberation, made legible</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --chamber:#181B27; --chamber-2:#1E2130; --chamber-3:#23273a;
+    --edge:rgba(233,235,241,.09); --edge-strong:rgba(233,235,241,.16);
+    --paper:#EFE9DB; --paper-edge:#D8CFB8; --ink:#26221A; --ink-soft:#6C6453;
+    --canvas-text:#EAECF2; --canvas-soft:#969CB0; --canvas-faint:#6B7185;
+    --brass:#D9AC50; --brass-deep:#B98E36; --brass-glow:rgba(217,172,80,.16);
+    --r-emp:#7191B9; --r-bld:#C47C58; --r-stw:#7E9C74;
+    --font-ui:'Space Grotesk',system-ui,-apple-system,sans-serif;
+    --font-read:'Newsreader',Georgia,'Times New Roman',serif;
+    --font-mono:'JetBrains Mono','SFMono-Regular',Menlo,monospace;
+    --ease:cubic-bezier(.22,.61,.36,1); --ease-out:cubic-bezier(.16,1,.3,1);
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0; background:var(--chamber); color:var(--canvas-text);
+    font-family:var(--font-ui); line-height:1.5; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    background-image:
+      radial-gradient(900px 520px at 78% -8%, #20243a 0%, rgba(32,36,58,0) 60%),
+      radial-gradient(760px 600px at -6% 108%, #1c2030 0%, rgba(28,32,48,0) 55%);
+    background-attachment:fixed;
+  }
+  .wrap{max-width:1060px;margin:0 auto;padding:40px 28px 60px;}
+
+  .mast{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap;
+        padding-bottom:22px;border-bottom:1px solid var(--edge);}
+  .brand{display:flex;align-items:center;gap:13px;}
+  .glyph{flex:none;width:34px;height:34px;}
+  .wordmark{font-weight:700;font-size:25px;letter-spacing:-.02em;}
+  .wordmark .dot{color:var(--brass);}
+  .tagline{margin-top:3px;font-family:var(--font-mono);font-size:11.5px;color:var(--canvas-faint);}
+  .mast-note{font-family:var(--font-mono);font-size:11px;line-height:1.65;color:var(--canvas-faint);max-width:310px;text-align:right;}
+  .mast-note a{color:var(--canvas-soft);text-decoration:none;border-bottom:1px solid var(--edge-strong);}
+  .mast-note a:hover{color:var(--brass);}
+
+  .thesis{font-family:var(--font-read);font-size:clamp(20px,3.1vw,27px);line-height:1.34;font-weight:400;
+          color:var(--canvas-text);margin:30px 0 4px;max-width:770px;}
+  .thesis em{font-style:italic;color:#fff;}
+  .thesis .q{color:var(--brass);font-style:normal;}
+
+  .cases{display:flex;gap:8px;margin:26px 0 4px;flex-wrap:wrap;}
+  .case-tab{appearance:none;cursor:pointer;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.04em;
+            text-transform:uppercase;color:var(--canvas-soft);background:transparent;border:1px solid var(--edge);
+            border-radius:999px;padding:7px 15px;transition:color .25s,border-color .25s,background .25s;}
+  .case-tab:hover{color:var(--canvas-text);border-color:var(--edge-strong);}
+  .case-tab[aria-selected="true"]{color:var(--chamber);background:var(--brass);border-color:var(--brass);font-weight:500;}
+  .case-tab .n{opacity:.6;margin-right:7px;}
+  .case-tab[aria-selected="true"] .n{opacity:.85;}
+
+  .prompt{position:relative;margin:18px 0 28px;padding:24px 26px 24px 30px;background:var(--chamber-2);
+          border:1px solid var(--edge);border-radius:14px;overflow:hidden;}
+  .prompt::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--brass);opacity:.85;}
+  .prompt .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--canvas-faint);margin-bottom:11px;}
+  .prompt .question{font-family:var(--font-read);font-size:clamp(18px,2.5vw,22px);line-height:1.42;color:#fff;}
+
+  .bench{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:760px){.bench{grid-template-columns:1fr;}}
+
+  .card{position:relative;background:var(--paper);border-radius:13px;border:1px solid var(--paper-edge);
+        color:var(--ink);padding:18px 18px 16px;display:flex;flex-direction:column;min-height:196px;
+        box-shadow:0 1px 0 rgba(255,255,255,.04), 0 18px 34px -22px rgba(0,0,0,.7);
+        animation:cardIn .6s var(--ease-out) backwards;animation-delay:calc(var(--i,0)*85ms + 90ms);
+        transition:box-shadow .4s ease;}
+  @keyframes cardIn{from{opacity:0;transform:translateY(13px);}to{opacity:1;transform:none;}}
+  .card::before{content:"";position:absolute;left:18px;right:18px;top:0;height:3px;border-radius:0 0 3px 3px;background:var(--hue,#999);}
+  .card:hover{box-shadow:0 1px 0 rgba(255,255,255,.05), 0 24px 44px -22px rgba(0,0,0,.78);}
+  .card-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:11px;}
+  .r-name{font-family:var(--font-ui);font-weight:600;font-size:15px;letter-spacing:-.01em;color:var(--ink);}
+  .r-kind{font-family:var(--font-mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--hue,#777);font-weight:500;}
+
+  .card-body{position:relative;flex:1;display:flex;margin-bottom:13px;}
+  .rationale{font-family:var(--font-read);font-size:14.5px;line-height:1.5;color:#33301f;margin:0;
+             opacity:0;transition:opacity .55s ease;transition-delay:calc(var(--i,0)*85ms + 140ms);}
+  .seal-hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:9px;
+             font-family:var(--font-mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;
+             color:rgba(108,100,83,.5);opacity:1;transition:opacity .4s ease;pointer-events:none;}
+  .seal-hint .sx{width:9px;height:9px;border-radius:50%;border:1.4px solid rgba(108,100,83,.4);}
+
+  .vote{margin-top:auto;display:flex;align-items:center;gap:9px;border-top:1px solid var(--paper-edge);padding-top:11px;min-height:39px;}
+  .vote-label{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-soft);}
+  .vote-val{font-family:var(--font-ui);font-weight:600;font-size:13.5px;color:var(--ink);}
+  .vote-sealed{display:flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:11px;color:var(--ink-soft);}
+  .seal-dot{width:7px;height:7px;border-radius:50%;background:var(--hue,#999);box-shadow:0 0 0 3px color-mix(in srgb,var(--hue,#999) 22%,transparent);}
+  .vote-reveal{opacity:0;transition:opacity .5s ease;transition-delay:calc(var(--i,0)*85ms + 220ms);}
+
+  /* stage scoping — classes live on #stage */
+  #stage.is-revealed .rationale{opacity:1;}
+  #stage.is-revealed .seal-hint{opacity:0;}
+  #stage.is-revealed .vote-reveal{opacity:1;}
+  #stage.is-revealed .vote-sealed{display:none;}
+
+  .tally{margin-top:18px;padding:18px 22px;border:1px solid var(--edge);border-radius:13px;background:var(--chamber-2);
+         opacity:0;transform:translateY(10px);transition:opacity .5s ease .4s,transform .5s var(--ease-out) .4s;}
+  #stage.is-revealed .tally{opacity:1;transform:translateY(0);}
+  .tally-top{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px;}
+  .tally-status{font-family:var(--font-ui);font-weight:600;font-size:15px;color:var(--canvas-text);}
+  .tally-status .mark{color:var(--brass);}
+  .tally-sub{font-family:var(--font-mono);font-size:11px;color:var(--canvas-faint);}
+  .tally-rows{display:flex;flex-direction:column;gap:9px;}
+  .trow{display:grid;grid-template-columns:128px 1fr auto;align-items:center;gap:13px;}
+  @media(max-width:520px){.trow{grid-template-columns:96px 1fr auto;gap:9px;}}
+  .trow-opt{font-family:var(--font-mono);font-size:11.5px;color:var(--canvas-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .trow-bar{height:7px;border-radius:4px;background:var(--chamber-3);overflow:hidden;}
+  .trow-fill{height:100%;width:0;border-radius:4px;background:linear-gradient(90deg,var(--brass-deep),var(--brass));transition:width .7s var(--ease-out) .55s;}
+  .trow-n{font-family:var(--font-mono);font-size:12px;color:var(--canvas-soft);min-width:14px;text-align:right;}
+
+  .crux{margin-top:16px;border-radius:14px;position:relative;overflow:hidden;
+        background:linear-gradient(165deg,#211d12,#1b1a16);border:1px solid var(--brass-deep);
+        max-height:0;opacity:0;transition:max-height .72s var(--ease),opacity .55s ease,box-shadow .6s ease,margin-top .4s ease;}
+  #stage.is-crux .crux{max-height:620px;opacity:1;box-shadow:0 0 0 1px var(--brass-deep),0 30px 62px -34px rgba(217,172,80,.42);}
+  .crux-inner{padding:24px 26px 26px;}
+  .crux-eyebrow{display:flex;align-items:center;gap:12px;font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);margin-bottom:14px;}
+  .crux-eyebrow .line{flex:1;height:1px;background:linear-gradient(90deg,var(--brass-deep),transparent);}
+  .crux-text{font-family:var(--font-read);font-size:clamp(19px,2.7vw,24px);line-height:1.4;color:#F7EFDD;font-weight:400;margin:0 0 18px;}
+  .crux-text em{color:var(--brass);font-style:normal;}
+  .crux-test{display:flex;gap:14px;align-items:flex-start;padding-top:16px;border-top:1px solid rgba(217,172,80,.22);}
+  .crux-test .tlabel{flex:none;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--brass-deep);padding-top:3px;width:118px;}
+  @media(max-width:520px){.crux-test{flex-direction:column;gap:7px;}.crux-test .tlabel{width:auto;}}
+  .crux-test .tbody{font-family:var(--font-mono);font-size:13px;line-height:1.62;color:#D9D2C0;}
+
+  .controls{display:flex;align-items:center;gap:14px;margin-top:24px;flex-wrap:wrap;}
+  .advance{appearance:none;cursor:pointer;font-family:var(--font-ui);font-weight:600;font-size:14px;color:var(--chamber);
+           background:var(--brass);border:1px solid var(--brass);border-radius:10px;padding:12px 22px;letter-spacing:-.01em;
+           transition:transform .18s var(--ease),background .25s,box-shadow .25s;box-shadow:0 10px 24px -12px var(--brass-glow);}
+  .advance:hover{background:#E6BC63;transform:translateY(-1px);box-shadow:0 14px 30px -12px rgba(217,172,80,.5);}
+  .advance:active{transform:translateY(0);}
+  .advance[disabled]{background:transparent;color:var(--canvas-faint);border-color:var(--edge);box-shadow:none;cursor:default;transform:none;}
+  .ghost{appearance:none;cursor:pointer;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;
+         color:var(--canvas-soft);background:transparent;border:none;padding:6px 2px;transition:color .2s;}
+  .ghost:hover{color:var(--brass);}
+  .ghost[hidden]{display:none;}
+  .step-dots{display:flex;gap:7px;margin-left:auto;align-items:center;}
+  .step-dots .d{width:7px;height:7px;border-radius:50%;background:var(--edge-strong);transition:background .3s,transform .3s;}
+  .step-dots .d.on{background:var(--brass);transform:scale(1.18);}
+
+  :focus-visible{outline:2px solid var(--brass);outline-offset:3px;border-radius:6px;}
+
+  .foot{margin-top:44px;padding-top:20px;border-top:1px solid var(--edge);display:flex;justify-content:space-between;
+        align-items:baseline;gap:18px;flex-wrap:wrap;font-family:var(--font-mono);font-size:11.5px;color:var(--canvas-faint);line-height:1.6;}
+  .foot a{color:var(--canvas-soft);text-decoration:none;border-bottom:1px solid var(--edge-strong);}
+  .foot a:hover{color:var(--brass);}
+  .foot .who{color:var(--canvas-soft);}
+
+  @media(prefers-reduced-motion:reduce){
+    *{transition-duration:.001ms !important;transition-delay:0ms !important;}
+    .card{animation:none;}
+    .rationale,.vote-reveal,.tally,.trow-fill{opacity:1;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="mast">
+    <div class="brand">
+      <svg class="glyph" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+        <rect x="1" y="1" width="32" height="32" rx="9" stroke="#D9AC50" stroke-opacity="0.5"/>
+        <circle cx="11" cy="12" r="3" fill="#7191B9"/><circle cx="23" cy="12" r="3" fill="#C47C58"/><circle cx="17" cy="23" r="3" fill="#7E9C74"/>
+        <path d="M17 4.5V29.5" stroke="#D9AC50" stroke-width="1.1" stroke-dasharray="2 2.4"/>
+      </svg>
+      <div>
+        <div class="wordmark">holdout<span class="dot">.</span></div>
+        <div class="tagline">independent reasoners · sealed votes · the crux on disagreement</div>
+      </div>
+    </div>
+    <div class="mast-note">
+      interaction prototype by Mehrab Rahman<br>
+      the live tool runs real model calls from a CLI —<br>
+      <a href="https://github.com/mehrabr/holdout">github.com/mehrabr/holdout</a>
+    </div>
+  </header>
+
+  <p class="thesis">Most AI tools answer the question. This one won't — it runs several reasoners in isolation, keeps the disagreement instead of averaging it away, and hands back the one <span class="q">falsifiable crux</span> that would actually settle things. It doesn't decide for you; it makes you a <em>sharper</em> decider.</p>
+
+  <div class="cases" role="tablist" aria-label="Deliberation cases"></div>
+
+  <div id="stage">
+    <section class="prompt" aria-live="polite">
+      <div class="eyebrow">The question on the table</div>
+      <div class="question" id="question"></div>
+    </section>
+
+    <main class="bench" id="bench" aria-label="Reasoner positions"></main>
+
+    <section class="tally" id="tally">
+      <div class="tally-top">
+        <div class="tally-status" id="tallyStatus"></div>
+        <div class="tally-sub" id="tallySub"></div>
+      </div>
+      <div class="tally-rows" id="tallyRows"></div>
+    </section>
+
+    <section class="crux" id="crux">
+      <div class="crux-inner">
+        <div class="crux-eyebrow">The crux <span class="line"></span> what would change a mind</div>
+        <p class="crux-text" id="cruxText"></p>
+        <div class="crux-test">
+          <div class="tlabel">Falsifiable test</div>
+          <div class="tbody" id="cruxTest"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="controls">
+    <button class="advance" id="advance" type="button"></button>
+    <button class="ghost" id="replay" type="button" hidden>↺ Replay this case</button>
+    <div class="step-dots" aria-hidden="true">
+      <span class="d" data-s="0"></span><span class="d" data-s="1"></span><span class="d" data-s="2"></span>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <div class="who">Mehrab Rahman — engineer who builds tools that leave the person sharper. <a href="https://mehrabr.com">mehrabr.com</a></div>
+    <div>scripted deliberations for demonstration · built as a single static file</div>
+  </footer>
+</div>
+
+<script>
+const HUES = {Empiricist:'var(--r-emp)', Builder:'var(--r-bld)', Steward:'var(--r-stw)'};
+const KIND = {Empiricist:'measures it', Builder:'ships it', Steward:'guards the downside'};
+
+const CASES = [
+  {
+    tag:'Education',
+    question:'An AI coding tutor can hand a learner the working fix on request, or withhold it and ask a leading question instead. A learner has been stuck on the same bug for twenty minutes. Which choice does more for their skill?',
+    options:['Give the fix','Withhold & prompt','Depends'],
+    reasoners:[
+      {name:'Empiricist', vote:'Depends', rationale:'We can’t answer this without measuring it, and the twenty-minute mark is carrying the whole question. For a novice that’s well past productive struggle; for someone intermediate it can be the exact moment the lesson sticks. Skill is the dependent variable here — instrument it before you pick a policy.'},
+      {name:'Builder', vote:'Give the fix', rationale:'A stuck learner who gives up learns nothing, and frustration compounds fast. Unblock them, show the working fix, and annotate why it works. Capability comes from shipping and from reading good examples — not from being denied the example as a test of grit.'},
+      {name:'Steward', vote:'Withhold & prompt', rationale:'Hand over the answer and you’ve taught them the tutor is where answers live. The durable skill is the debugging loop itself — forming a hypothesis and testing it — and the leading question keeps that muscle under load. Dependence is the failure mode, not slowness.'},
+    ],
+    crux:'Whether the learner is past the point of <em>productive</em> struggle at twenty minutes.',
+    test:'Give a fresh, unaided bug a week later and compare skill transfer by intervention. If the withhold group doesn’t outperform the give-the-fix group on the unaided task, the dependence argument loses.'
+  },
+  {
+    tag:'Shipping',
+    question:'A new LLM feature scores 92% on the eval suite, but the suite is three weeks old. Ship it now behind a 5% flag, or hold until the suite is widened?',
+    options:['Ship at 5%','Hold','Widen first'],
+    reasoners:[
+      {name:'Empiricist', vote:'Hold', rationale:'A three-week-old suite measures a frozen idea of the task. 92% on a stale suite is an unknown on the live distribution, and a 5% flag still routes real people into a failure mode nobody has measured. Numbers that don’t track the current task aren’t safety, they’re comfort.'},
+      {name:'Builder', vote:'Ship at 5%', rationale:'The 5% flag is the wider eval — it’s the only sample drawn from the real distribution. You learn more from a day of production traffic than from another week of synthetic cases written against last month’s assumptions. Instrument it heavily and watch it in the open.'},
+      {name:'Steward', vote:'Hold', rationale:'The cost of a fluent wrong answer to a real user isn’t symmetric with the cost of waiting a week, and trust doesn’t have a rollback. A flag isn’t free just because it’s small — widen the suite, then ship into something you can actually read.'},
+    ],
+    crux:'Whether 5% flagged traffic is an acceptable <em>instrument</em> for the failure modes the stale suite misses — or an unacceptable exposure of real users to them.',
+    test:'Name the worst plausible failure and its blast radius at 5%. If one occurrence is tolerable and reversible, you ship to learn; if it isn’t, the suite widens first. The disagreement is entirely about that one estimate.'
+  }
+];
+
+let caseIdx = 0, stage = 0;
+const stageEl = document.getElementById('stage');
+const elBench = document.getElementById('bench');
+const elAdvance = document.getElementById('advance');
+const elReplay = document.getElementById('replay');
+const elCases = document.querySelector('.cases');
+
+CASES.forEach((c,i)=>{
+  const b=document.createElement('button');
+  b.className='case-tab'; b.type='button'; b.setAttribute('role','tab');
+  b.setAttribute('aria-selected', i===0?'true':'false');
+  b.innerHTML=`<span class="n">0${i+1}</span>${c.tag}`;
+  b.addEventListener('click', ()=>{ if(i===caseIdx) return; caseIdx=i; stage=0; renderCase(); });
+  elCases.appendChild(b);
+});
+
+function renderCase(){
+  const c = CASES[caseIdx];
+  [...elCases.children].forEach((b,i)=> b.setAttribute('aria-selected', i===caseIdx?'true':'false'));
+  document.getElementById('question').textContent = c.question;
+
+  elBench.innerHTML='';
+  c.reasoners.forEach((r,i)=>{
+    const card=document.createElement('article');
+    card.className='card';
+    card.style.setProperty('--i', i);
+    card.style.setProperty('--hue', HUES[r.name]);
+    card.innerHTML=`
+      <div class="card-head"><span class="r-name">${r.name}</span><span class="r-kind">${KIND[r.name]}</span></div>
+      <div class="card-body">
+        <span class="seal-hint"><span class="sx"></span>sealed</span>
+        <p class="rationale">${r.rationale}</p>
+      </div>
+      <div class="vote">
+        <span class="vote-sealed"><span class="seal-dot"></span>vote sealed</span>
+        <span class="vote-reveal"><span class="vote-label">votes</span> <span class="vote-val">${r.vote}</span></span>
+      </div>`;
+    elBench.appendChild(card);
+  });
+
+  const counts={}; c.options.forEach(o=>counts[o]=0); c.reasoners.forEach(r=>counts[r.vote]++);
+  const max=Math.max(...Object.values(counts));
+  const top=c.options.filter(o=>counts[o]===max);
+  const split=c.options.map(o=>counts[o]).filter(n=>n>0).sort((a,b)=>b-a).join('–');
+  document.getElementById('tallyStatus').innerHTML = top.length>1
+    ? 'No consensus — the panel <span class="mark">split</span>.'
+    : `A lean toward “${top[0]}” — but the <span class="mark">verdict is withheld</span>.`;
+  document.getElementById('tallySub').textContent = `votes ${split} · 3 independent reasoners`;
+  const rows=document.getElementById('tallyRows'); rows.innerHTML='';
+  c.options.forEach(o=>{
+    const row=document.createElement('div'); row.className='trow';
+    row.innerHTML=`<div class="trow-opt">${o}</div><div class="trow-bar"><div class="trow-fill" data-w="${counts[o]/3*100}"></div></div><div class="trow-n">${counts[o]}</div>`;
+    rows.appendChild(row);
+  });
+
+  document.getElementById('cruxText').innerHTML = c.crux;
+  document.getElementById('cruxTest').textContent = c.test;
+
+  applyStage();
+}
+
+function applyStage(){
+  stageEl.classList.toggle('is-revealed', stage>=1);
+  stageEl.classList.toggle('is-crux', stage>=2);
+  elBench.querySelectorAll('.trow-fill'); // noop guard
+  const fills = document.querySelectorAll('#tallyRows .trow-fill');
+  fills.forEach(f=> f.style.width = (stage>=1 ? f.dataset.w+'%' : '0%'));
+
+  const labels=['Reveal the deliberation','Surface the crux','Deliberation complete'];
+  elAdvance.textContent = labels[stage];
+  elAdvance.disabled = stage>=2;
+  elReplay.hidden = stage<2;
+  document.querySelectorAll('.step-dots .d').forEach(d=> d.classList.toggle('on', Number(d.dataset.s)<=stage));
+}
+
+elAdvance.addEventListener('click', ()=>{ if(stage<2){ stage++; applyStage(); if(stage===2) elReplay.focus(); }});
+elReplay.addEventListener('click', ()=>{ stage=0; applyStage(); elAdvance.focus(); });
+
+renderCase();
+</script>
+</body>
+</html>
