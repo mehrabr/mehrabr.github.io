@@ -1,0 +1,40 @@
+{%- comment -%}
+  Project card, shared by the home featured strip and the projects grid.
+  Params:
+    proj      — a _projects item (required)
+    featured  — true → paper "pulled" treatment + receipt line (home)
+                false → surface treatment + tech badges (grid)
+    link      — true → title links to the project page
+{%- endcomment -%}
+{%- assign p = include.proj -%}
+<article class="project-card{% if include.featured %} project-card--paper{% endif %}{% if p.status != 'shipped' %} project-card--progress{% endif %}">
+  <span class="status-pill {% if p.status == 'shipped' %}status-pill--shipped{% else %}status-pill--progress{% endif %}">
+    {% if p.status == 'shipped' %}shipped{% else %}in progress{% endif %}
+  </span>
+
+  <h3 class="project-card__title">
+    {% if include.link %}<a href="{{ p.url | relative_url }}">{{ p.title }}</a>{% else %}{{ p.title }}{% endif %}
+  </h3>
+
+  <p class="project-card__pitch">{{ p.pitch }}</p>
+
+  {% if include.featured %}
+    {%- capture receipt_items -%}{{ p.status }}{% for t in p.tech %} | {{ t }}{% endfor %}{%- endcapture -%}
+    {% include receipt.html items=receipt_items %}
+  {% else %}
+    <div class="tech-badges">
+      {% for t in p.tech %}<span class="tech-badge">{{ t }}</span>{% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="card-actions">
+    {% if p.demo_local %}
+      <a class="btn btn-primary" href="{{ p.demo_local | relative_url }}">live demo</a>
+    {% elsif p.demo_url %}
+      <a class="btn btn-primary" href="{{ p.demo_url }}">live demo</a>
+    {% endif %}
+    {% if p.repo %}
+      <a class="btn btn-secondary" href="{{ p.repo }}">github</a>
+    {% endif %}
+  </div>
+</article>

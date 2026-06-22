@@ -15,7 +15,7 @@ layout: default
 </section>
 
 <!-- FEATURED -------------------------------------------------------------- -->
-{% assign featured = site.data.featured %}
+{% assign featured = site.projects | where: 'featured', true | sort: 'order' %}
 <section class="home-section reveal reveal-3">
   <div class="home-section__head">
     <span class="eyebrow">featured</span>
@@ -24,22 +24,7 @@ layout: default
 
   <div class="card-grid">
     {% for proj in featured %}
-      <article class="project-card project-card--paper{% if proj.status != 'shipped' %} project-card--progress{% endif %}">
-        <span class="status-pill {% if proj.status == 'shipped' %}status-pill--shipped{% else %}status-pill--progress{% endif %}">
-          {{ proj.status }}
-        </span>
-        <h3 class="project-card__title">{{ proj.title }}</h3>
-        <p class="project-card__pitch">{{ proj.pitch }}</p>
-        {% include receipt.html items=proj.receipt %}
-        <div class="card-actions">
-          {% if proj.demo %}
-            <a class="btn btn-primary" href="{{ proj.demo }}">live demo</a>
-          {% endif %}
-          {% if proj.repo %}
-            <a class="btn btn-secondary" href="{{ proj.repo }}">github</a>
-          {% endif %}
-        </div>
-      </article>
+      {% include project-card.html proj=proj featured=true link=true %}
     {% endfor %}
   </div>
 </section>

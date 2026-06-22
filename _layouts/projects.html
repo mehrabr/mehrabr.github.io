@@ -1,0 +1,20 @@
+---
+layout: default
+---
+
+{% include lang.html %}
+
+<header class="home-section__head" style="margin-bottom: 8px;">
+  <h1 class="hero__identity" style="font-size: clamp(24px, 4vw, 34px);">projects</h1>
+</header>
+
+<p class="hero__sub" style="margin: 0 0 28px;">
+  A running list of things I've built or am building, mostly small, mostly in public.
+</p>
+
+{% assign projects = site.projects | sort: 'order' %}
+<div class="card-grid card-grid--projects">
+  {% for proj in projects %}
+    {% include project-card.html proj=proj link=true %}
+  {% endfor %}
+</div>

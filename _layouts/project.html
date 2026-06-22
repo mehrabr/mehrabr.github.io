@@ -1,0 +1,31 @@
+---
+layout: default
+---
+
+{% include lang.html %}
+
+<article class="project-page">
+  <header class="project-hero">
+    <a class="project-hero__back" href="{{ '/projects/' | relative_url }}">&larr; projects</a>
+    <h1 class="project-hero__title">{{ page.title }}</h1>
+    {%- capture receipt_items -%}
+      {% if page.status == 'shipped' %}shipped{% else %}in progress{% endif %}{% for t in page.tech %} | {{ t }}{% endfor %}
+    {%- endcapture -%}
+    {% include receipt.html items=receipt_items %}
+
+    <div class="card-actions project-hero__actions">
+      {% if page.demo_local %}
+        <a class="btn btn-primary" href="{{ page.demo_local | relative_url }}">live demo</a>
+      {% elsif page.demo_url %}
+        <a class="btn btn-primary" href="{{ page.demo_url }}">live demo</a>
+      {% endif %}
+      {% if page.repo %}
+        <a class="btn btn-secondary" href="{{ page.repo }}">github</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <div class="content">
+    {{ content }}
+  </div>
+</article>
