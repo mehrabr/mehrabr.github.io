@@ -33,4 +33,6 @@ systems work on a high-availability Learning Management System.
 
 ---
 
-Find me on [GitHub](https://github.com/mehrabr).
+**Contact** — [mehrabmrahman@gmail.com](mailto:mehrabmrahman@gmail.com) &nbsp;·&nbsp; [GitHub](https://github.com/mehrabr)
+
+Open to talking about distributed systems, data engineering, and small tools that hold in your head.

@@ -15,3 +15,6 @@ _site
 # OS
 .DS_Store
 Thumbs.db
+
+# Local lock (darwin-only); CI resolves fresh
+Gemfile.lock

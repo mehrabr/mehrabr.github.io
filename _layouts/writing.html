@@ -1,0 +1,42 @@
+---
+layout: default
+---
+
+{% include lang.html %}
+
+<header class="home-section__head" style="margin-bottom: 22px;">
+  <h1 class="hero__identity" style="font-size: clamp(24px, 4vw, 34px);">writing</h1>
+  <a href="{{ '/feed.xml' | relative_url }}" aria-label="RSS feed">rss</a>
+</header>
+
+<nav class="filter-chips" aria-label="Filter writing by category">
+  <a class="filter-chip is-active" href="{{ '/writing/' | relative_url }}">all</a>
+  <a class="filter-chip" href="{{ '/categories/engineering/' | relative_url }}">engineering</a>
+  <a class="filter-chip" href="{{ '/categories/teaching/' | relative_url }}">teaching</a>
+  <a class="filter-chip" href="{{ '/categories/projects/' | relative_url }}">projects</a>
+</nav>
+
+<div class="writing-list">
+  {% for post in paginator.posts %}
+    <a class="writing-row" href="{{ post.url | relative_url }}">
+      <span class="writing-row__title">{{ post.title }}</span>
+      {% include receipt.html post=post readtime=true %}
+    </a>
+  {% endfor %}
+</div>
+
+{% if paginator.total_pages > 1 %}
+  <nav class="pagination-nav" aria-label="Pagination">
+    {% if paginator.previous_page_path %}
+      <a class="btn btn-secondary" href="{{ paginator.previous_page_path | relative_url }}">&larr; newer</a>
+    {% else %}
+      <span></span>
+    {% endif %}
+    <span class="pagination-nav__count">{{ paginator.page }} / {{ paginator.total_pages }}</span>
+    {% if paginator.next_page_path %}
+      <a class="btn btn-secondary" href="{{ paginator.next_page_path | relative_url }}">older &rarr;</a>
+    {% else %}
+      <span></span>
+    {% endif %}
+  </nav>
+{% endif %}

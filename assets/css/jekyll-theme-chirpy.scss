@@ -1,0 +1,815 @@
+---
+---
+
+@use 'abstracts/variables' with (
+  $theme: '{{ site.theme_mode }}'
+);
+
+/* prettier-ignore */
+@use 'main
+{%- if jekyll.environment == 'production' -%}
+  .bundle
+{%- endif -%}
+';
+
+/* ============================================================================
+   mehrabr.com house design system
+   Derived from the holdout demo. Single source of truth for tokens + components.
+   Layered over Chirpy so the bespoke surfaces and the reskinned blog are one site.
+   ============================================================================ */
+
+:root {
+  /* dark (primary) — from holdout "chamber" */
+  --bg:        #181B27;
+  --surface:   #1E2130;
+  --surface-2: #23273A;
+  --edge:        rgba(233, 235, 241, 0.09);
+  --edge-strong: rgba(233, 235, 241, 0.16);
+  --text:      #EAECF2;
+  --text-soft: #969CB0;
+  --text-faint:#6B7185; /* decorative / large only */
+  --accent:      #D9AC50; /* brass */
+  --accent-deep: #B98E36;
+  --accent-glow: rgba(217, 172, 80, 0.16);
+  /* "pulled" paper card surface, for featured items */
+  --paper:      #EFE9DB;
+  --paper-edge: #D8CFB8;
+  --paper-ink:  #26221A;
+  --paper-soft: #6C6453;
+  --radius: 12px;
+  --radius-sm: 8px;
+
+  --font-ui:   'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-read: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Menlo, monospace;
+
+  --maxw-prose: 68ch;
+  --maxw-wide:  1040px;
+}
+
+/* Light mode reuses Chirpy's data-bs-theme contract so one toggle drives both
+   the bespoke surfaces and the reskinned blog. Light palette: Sandbox demo. */
+html[data-bs-theme='light'] {
+  --bg: #F5F2EB;
+  --surface: #FFFFFF;
+  --surface-2: #EFEAE0;
+  --edge: #E2DCD0;
+  --edge-strong: #D4CEC4;
+  --text: #0D0F14;
+  --text-soft: #5A5446;
+  --text-faint: #8A8478;
+  --accent: #B98E36;
+  --accent-deep: #8A6A28; /* brass-deep: text on paper (light-on-light fails) */
+  --accent-glow: rgba(185, 142, 54, 0.12);
+}
+
+/* ------------------------------------------------------------------ base ---- */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The bespoke shell owns layout; neutralize any inherited Chirpy chrome offsets. */
+#main-wrapper,
+.container {
+  background: transparent;
+}
+
+::selection {
+  background: var(--accent-glow);
+}
+
+/* ---------------------------------------------------------- site shell ---- */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: saturate(140%) blur(8px);
+  border-bottom: 1px solid var(--edge);
+}
+
+.site-header__inner {
+  max-width: var(--maxw-wide);
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.wordmark {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.wordmark .dot {
+  color: var(--accent);
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.site-nav a {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  color: var(--text-soft);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.site-nav a:hover,
+.site-nav a[aria-current='page'] {
+  color: var(--text);
+}
+
+.theme-toggle {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-sm);
+  color: var(--text-soft);
+  width: 34px;
+  height: 30px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.theme-toggle:hover {
+  color: var(--text);
+  border-color: var(--edge-strong);
+}
+
+.nav-toggle {
+  display: none;
+}
+
+.site-main {
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: var(--maxw-wide);
+  margin: 0 auto;
+  padding: 40px 24px 64px;
+}
+
+.site-main--prose {
+  max-width: calc(var(--maxw-prose) + 48px);
+}
+
+/* ----------------------------------------------------------- site footer -- */
+
+.site-footer {
+  flex-shrink: 0;
+  border-top: 1px solid var(--edge);
+  margin-top: 48px;
+}
+
+.site-footer__inner {
+  max-width: var(--maxw-wide);
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text-faint);
+}
+
+.site-footer__inner a {
+  color: var(--text-soft);
+  text-decoration: none;
+  border-bottom: 1px solid var(--edge-strong);
+}
+
+.site-footer__inner a:hover {
+  color: var(--text);
+}
+
+.site-footer__links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+/* -------------------------------------------------------------- receipt --- */
+
+.receipt {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--text-soft);
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+}
+
+.receipt .sep {
+  color: var(--text-faint);
+  padding: 0 7px;
+}
+
+/* ----------------------------------------------------------------- cards --- */
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.project-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-1px);
+  border-color: var(--edge-strong);
+}
+
+/* Featured "pulled paper" card — the deliberate figure/ground moment. */
+.project-card--paper {
+  background: var(--paper);
+  border-color: var(--paper-edge);
+  color: var(--paper-ink);
+}
+
+.project-card--paper::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: var(--accent);
+}
+
+.project-card__title {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.project-card--paper .project-card__title {
+  color: var(--paper-ink);
+}
+
+.project-card__pitch {
+  font-family: var(--font-read);
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--text-soft);
+  margin: 0;
+  flex-grow: 1;
+}
+
+.project-card--paper .project-card__pitch {
+  color: #33301f;
+}
+
+.project-card--paper .receipt {
+  color: var(--paper-soft);
+}
+
+.project-card--paper .receipt .sep {
+  color: var(--paper-edge);
+}
+
+/* status pill */
+.status-pill {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.status-pill--shipped {
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.project-card--paper .status-pill--shipped {
+  color: var(--accent-deep);
+  border-color: var(--accent-deep);
+}
+
+.status-pill--progress {
+  color: var(--text-faint);
+  border: 1px solid var(--text-faint);
+}
+
+.project-card--progress {
+  opacity: 0.72;
+}
+
+/* tech badges */
+.tech-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tech-badge {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-soft);
+  background: var(--surface-2);
+  border-radius: 5px;
+  padding: 3px 7px;
+}
+
+.project-card--paper .tech-badge {
+  color: var(--paper-soft);
+  background: rgba(38, 34, 26, 0.06);
+}
+
+/* actions */
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.btn {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 13px;
+  text-decoration: none;
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: filter 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #1a1505;
+  border: 1px solid var(--accent);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.06);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--edge-strong);
+}
+
+.btn-secondary:hover {
+  border-color: var(--text-soft);
+}
+
+.project-card--paper .btn-secondary {
+  color: var(--paper-ink);
+  border-color: var(--paper-edge);
+}
+
+/* -------------------------------------------------------------- home ------ */
+
+.hero {
+  position: relative;
+  padding: 24px 0 8px;
+}
+
+.hero__identity {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: clamp(26px, 4.4vw, 40px);
+  line-height: 1.16;
+  letter-spacing: -0.02em;
+  max-width: 22ch;
+  margin: 0;
+}
+
+.hero__sub {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-soft);
+  max-width: 56ch;
+  margin: 16px 0 0;
+}
+
+.home-section {
+  margin-top: 48px;
+}
+
+.home-section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.home-section__head a {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-soft);
+  text-decoration: none;
+}
+
+.home-section__head a:hover {
+  color: var(--text);
+}
+
+/* latest writing rows */
+.writing-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.writing-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 13px 0;
+  border-top: 1px solid var(--edge);
+  text-decoration: none;
+}
+
+.writing-row:last-child {
+  border-bottom: 1px solid var(--edge);
+}
+
+.writing-row__title {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 15.5px;
+  color: var(--text);
+  transition: color 0.15s ease;
+}
+
+.writing-row:hover .writing-row__title {
+  color: var(--accent);
+}
+
+.writing-row .receipt {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* category filter chips */
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.filter-chip {
+  appearance: none;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.03em;
+  text-transform: lowercase;
+  color: var(--text-soft);
+  background: transparent;
+  border: 1px solid var(--edge);
+  border-radius: 999px;
+  padding: 5px 13px;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.filter-chip:hover {
+  color: var(--text);
+  border-color: var(--edge-strong);
+}
+
+.filter-chip.is-active {
+  color: var(--bg);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* pagination nav */
+.pagination-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.pagination-nav__count {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+/* ----------------------------------------------------------- 404 ---------- */
+
+.error-page {
+  padding: 40px 0 60px;
+  max-width: 52ch;
+}
+
+.error-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+}
+
+.error-title {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: clamp(24px, 4vw, 34px);
+  letter-spacing: -0.02em;
+  margin: 10px 0 14px;
+}
+
+.error-body {
+  font-family: var(--font-read);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-soft);
+}
+
+.error-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+/* ================================================================ blog ===== */
+/* Reskin Chirpy's reading surfaces to the house palette + type. */
+
+.post h1,
+.dynamic-title,
+#post-list .card-title,
+.content h1,
+.content h2,
+.content h3,
+.content h4 {
+  font-family: var(--font-ui);
+  letter-spacing: -0.015em;
+  color: var(--text);
+}
+
+.post-meta,
+.post-meta a {
+  font-family: var(--font-mono) !important;
+  font-size: 11.5px !important;
+  color: var(--text-soft) !important;
+}
+
+.content {
+  font-family: var(--font-read);
+  font-size: 17px;
+  line-height: 1.72;
+  color: var(--text);
+  max-width: var(--maxw-prose);
+}
+
+.content p,
+.content li {
+  font-family: var(--font-read);
+}
+
+.content a {
+  color: var(--accent);
+  text-decoration-color: var(--edge-strong);
+}
+
+html[data-bs-theme='light'] .content a {
+  color: var(--accent-deep);
+}
+
+.content blockquote {
+  border-left: 3px solid var(--accent);
+  color: var(--text-soft);
+  font-style: italic;
+}
+
+.content code,
+.content pre,
+.highlight,
+.highlight pre {
+  font-family: var(--font-mono);
+}
+
+.content :not(pre) > code {
+  background: var(--surface-2);
+  color: var(--text);
+  border-radius: 5px;
+  padding: 0.15em 0.4em;
+}
+
+.content pre,
+.highlight,
+div.highlighter-rouge,
+figure.highlight {
+  background: var(--surface-2) !important;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-sm);
+}
+
+.content pre code {
+  background: transparent;
+}
+
+/* blog post-list cards (also used by /writing/) */
+#post-list .card,
+#post-list .card-wrapper {
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+}
+
+#post-list .card-wrapper:hover {
+  border-color: var(--edge-strong);
+}
+
+#post-list .card-text,
+#post-list .card-text p {
+  font-family: var(--font-read);
+  color: var(--text-soft);
+}
+
+/* tags / categories pills */
+.post-tag,
+.post-tags .post-tag {
+  font-family: var(--font-mono);
+  background: var(--surface-2);
+  color: var(--text-soft);
+  border-radius: 5px;
+}
+
+/* TOC popup (Chirpy 7.6 in-article TOC) */
+#toc-popup,
+#toc-bar {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--edge);
+}
+
+#toc-solo-trigger {
+  font-family: var(--font-mono);
+  color: var(--text-soft);
+  border-color: var(--edge-strong);
+}
+
+/* -------------------------------------------------------- a11y / focus ---- */
+
+a:focus-visible,
+button:focus-visible,
+.btn:focus-visible,
+.theme-toggle:focus-visible,
+.filter-chip:focus-visible,
+.project-card a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ------------------------------------------------------- responsive ------- */
+
+@media (max-width: 850px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 620px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .writing-row {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .writing-row .receipt {
+    white-space: normal;
+  }
+
+  /* Collapse the nav to a disclosure menu */
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .site-nav {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 12px 24px 18px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--edge);
+    display: none;
+  }
+
+  .site-nav.is-open {
+    display: flex;
+  }
+
+  .site-nav a {
+    font-size: 14px;
+    padding: 6px 0;
+  }
+
+  .site-header__inner {
+    position: relative;
+  }
+}
+
+/* ------------------------------------------------------- reduced motion --- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ---------------------------------------------------- home hero reveal ---- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: reveal-in 0.5s ease forwards;
+}
+
+.reveal-1 { animation-delay: 0.05s; }
+.reveal-2 { animation-delay: 0.15s; }
+.reveal-3 { animation-delay: 0.27s; }
+
+@keyframes reveal-in {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

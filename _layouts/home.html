@@ -1,0 +1,62 @@
+---
+layout: default
+---
+
+{% include lang.html %}
+
+<section class="hero">
+  <h1 class="hero__identity reveal reveal-1">
+    Principal engineer. Distributed systems, data engineering, building in public.
+  </h1>
+  <p class="hero__sub reveal reveal-2">
+    I build small things to find out how much enterprise complexity is actually necessary —
+    something minimal enough to hold in your head, then I watch where it gets complicated.
+  </p>
+</section>
+
+<!-- FEATURED -------------------------------------------------------------- -->
+{% assign featured = site.data.featured %}
+<section class="home-section reveal reveal-3">
+  <div class="home-section__head">
+    <span class="eyebrow">featured</span>
+    <a href="{{ '/projects/' | relative_url }}">all projects &rarr;</a>
+  </div>
+
+  <div class="card-grid">
+    {% for proj in featured %}
+      <article class="project-card project-card--paper{% if proj.status != 'shipped' %} project-card--progress{% endif %}">
+        <span class="status-pill {% if proj.status == 'shipped' %}status-pill--shipped{% else %}status-pill--progress{% endif %}">
+          {{ proj.status }}
+        </span>
+        <h3 class="project-card__title">{{ proj.title }}</h3>
+        <p class="project-card__pitch">{{ proj.pitch }}</p>
+        {% include receipt.html items=proj.receipt %}
+        <div class="card-actions">
+          {% if proj.demo %}
+            <a class="btn btn-primary" href="{{ proj.demo }}">live demo</a>
+          {% endif %}
+          {% if proj.repo %}
+            <a class="btn btn-secondary" href="{{ proj.repo }}">github</a>
+          {% endif %}
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- LATEST WRITING -------------------------------------------------------- -->
+<section class="home-section">
+  <div class="home-section__head">
+    <span class="eyebrow">latest writing</span>
+    <a href="{{ '/writing/' | relative_url }}">all writing &rarr;</a>
+  </div>
+
+  <div class="writing-list">
+    {% for post in site.posts limit: 5 %}
+      <a class="writing-row" href="{{ post.url | relative_url }}">
+        <span class="writing-row__title">{{ post.title }}</span>
+        {% include receipt.html post=post %}
+      </a>
+    {% endfor %}
+  </div>
+</section>

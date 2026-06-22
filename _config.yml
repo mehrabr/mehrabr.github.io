@@ -28,8 +28,21 @@ avatar: assets/img/avatar.png
 # theme mode — comment out to follow system preference
 # theme_mode: dark
 
-# pagination
-paginate: 10
+# Blog posts live under /writing/ (the front door, /, is the portfolio home).
+permalink: /writing/:year/:month/:day/:title/
+
+# pagination (jekyll-paginate-v2 — paginates the custom /writing/ path)
+pagination:
+  enabled: true
+  per_page: 10
+  permalink: "/page/:num/"
+  sort_field: "date"
+  sort_reverse: true
+  trail:
+    before: 2
+    after: 2
+autopages:
+  enabled: false
 
 # analytics — add your ID when ready
 # analytics:

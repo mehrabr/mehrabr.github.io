@@ -1,0 +1,75 @@
+<!-- The sitewide top bar (replaces Chirpy's sidebar) -->
+<header class="site-header" aria-label="Top Bar">
+  <div class="site-header__inner">
+    <a class="wordmark" href="{{ '/' | relative_url }}">mehrab rahman<span class="dot">·</span></a>
+
+    <button
+      type="button"
+      class="theme-toggle nav-toggle"
+      id="nav-toggle"
+      aria-label="Toggle navigation"
+      aria-expanded="false"
+    >
+      <i class="fas fa-bars fa-fw"></i>
+    </button>
+
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      {%- assign url = page.url -%}
+      <a href="{{ '/projects/' | relative_url }}"{% if url contains '/projects' %} aria-current="page"{% endif %}>projects</a>
+      <a href="{{ '/writing/' | relative_url }}"{% if url contains '/writing' or page.layout == 'post' %} aria-current="page"{% endif %}>writing</a>
+      <a href="{{ '/about/' | relative_url }}"{% if url contains '/about' %} aria-current="page"{% endif %}>about</a>
+      <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch color theme" title="Switch theme">
+        <i class="fas fa-circle-half-stroke fa-fw" aria-hidden="true"></i>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<script>
+  (function () {
+    var KEY = 'mode'; // shared with Chirpy's mode contract
+    var root = document.documentElement;
+
+    function systemDark() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+
+    function apply(mode) {
+      // mode: 'dark' | 'light' | '' (system)
+      var effective = mode || (systemDark() ? 'dark' : 'light');
+      root.setAttribute('data-bs-theme', effective);
+    }
+
+    // Re-apply on load so the bespoke surfaces agree with the stored mode.
+    apply(localStorage.getItem(KEY) || '');
+
+    var btn = document.getElementById('theme-toggle');
+    if (btn) {
+      btn.addEventListener('click', function () {
+        var current = localStorage.getItem(KEY) || '';
+        var next = current === '' ? 'dark' : current === 'dark' ? 'light' : '';
+        if (next === '') {
+          localStorage.removeItem(KEY);
+        } else {
+          localStorage.setItem(KEY, next);
+        }
+        apply(next);
+      });
+    }
+
+    // System preference changes only matter while following the system.
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
+      if (!localStorage.getItem(KEY)) apply('');
+    });
+
+    // Mobile nav disclosure
+    var navToggle = document.getElementById('nav-toggle');
+    var nav = document.getElementById('site-nav');
+    if (navToggle && nav) {
+      navToggle.addEventListener('click', function () {
+        var open = nav.classList.toggle('is-open');
+        navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    }
+  })();
+</script>

@@ -1,0 +1,28 @@
+{%- comment -%}
+  The receipt — one mono line of an item's facts, ·-separated.
+  Two shapes:
+    Post:    {% include receipt.html post=post readtime=true %}
+    Generic: {% include receipt.html items="shipped|Go|DuckDB" %}
+{%- endcomment -%}
+{%- if include.post -%}
+  {%- assign p = include.post -%}
+  <span class="receipt">
+    <span>{{ p.date | date: '%Y-%m-%d' }}</span>
+    {%- if p.categories.size > 0 -%}
+      <span class="sep">·</span><span>{{ p.categories | last | downcase }}</span>
+    {%- endif -%}
+    {%- if include.readtime -%}
+      {%- assign words = p.content | strip_html | number_of_words -%}
+      {%- assign mins = words | divided_by: 180 | plus: 1 -%}
+      <span class="sep">·</span><span>{{ mins }} min</span>
+    {%- endif -%}
+  </span>
+{%- else -%}
+  {%- assign parts = include.items | split: '|' -%}
+  <span class="receipt">
+    {%- for part in parts -%}
+      {%- unless forloop.first -%}<span class="sep">·</span>{%- endunless -%}
+      <span>{{ part | strip }}</span>
+    {%- endfor -%}
+  </span>
+{%- endif -%}

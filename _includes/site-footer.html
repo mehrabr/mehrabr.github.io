@@ -1,0 +1,11 @@
+<!-- Quiet sitewide footer -->
+<footer class="site-footer" aria-label="Site Info">
+  <div class="site-footer__inner">
+    <span>&copy; {{ 'now' | date: '%Y' }} {{ site.social.name | default: site.title }}</span>
+    <span class="site-footer__links">
+      <a href="https://github.com/{{ site.github.username }}">github</a>
+      {% if site.social.email %}<a href="mailto:{{ site.social.email }}">email</a>{% endif %}
+      <a href="{{ '/feed.xml' | relative_url }}">rss</a>
+    </span>
+  </div>
+</footer>

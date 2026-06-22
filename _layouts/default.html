@@ -1,0 +1,47 @@
+---
+layout: compress
+---
+
+<!doctype html>
+
+{% include origin-type.html %}
+{% include lang.html %}
+
+<html lang="{{ page.lang | default: site.alt_lang | default: site.lang }}">
+  {% include head.html lang=lang %}
+
+  <body>
+    {% include site-header.html lang=lang %}
+
+    {%- assign prose_layouts = 'post,page' | split: ',' -%}
+    {%- assign is_prose = false -%}
+    {%- if prose_layouts contains page.layout or page.collection == 'tabs' -%}
+      {%- assign is_prose = true -%}
+    {%- endif -%}
+
+    <main
+      aria-label="Main Content"
+      class="site-main{% if is_prose %} site-main--prose{% endif %}"
+    >
+      {% if is_prose %}
+        {% include refactor-content.html content=content lang=lang %}
+      {% else %}
+        {{ content }}
+      {% endif %}
+
+      <!-- post/page tail includes (related posts, post nav, etc.) -->
+      {% for _include in layout.tail_includes %}
+        {% assign _include_path = _include | append: '.html' %}
+        {% include {{ _include_path }} lang=lang %}
+      {% endfor %}
+    </main>
+
+    {% include site-footer.html lang=lang %}
+
+    <!-- Embedded scripts (comments, etc.) -->
+    {% for _include in layout.script_includes %}
+      {% assign _include_path = _include | append: '.html' %}
+      {% include {{ _include_path }} %}
+    {% endfor %}
+  </body>
+</html>
