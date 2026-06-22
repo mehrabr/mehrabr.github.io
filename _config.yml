@@ -15,6 +15,9 @@ baseurl: ""
 github:
   username: mehrabr
 
+# Default social/OG card (large image). Posts can override with their own `image:`.
+social_preview_image: /assets/img/og.png
+
 # social links shown in the sidebar
 social:
   name: Mehrab Rahman

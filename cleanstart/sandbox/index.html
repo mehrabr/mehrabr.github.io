@@ -766,8 +766,25 @@ header {
 .summary-strip .summary-cell:nth-child(4) { animation: fadeIn 0.3s 0.2s both; }
 .summary-strip .summary-cell:nth-child(5) { animation: fadeIn 0.3s 0.25s both; }
 </style>
+<!-- shared house fonts for the return bar -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
+<!-- shared site return bar (Phase 4 demo harmonization) -->
+<style>
+  .mr-returnbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:11px 20px;background:#181B27;border-bottom:1px solid rgba(233,235,241,.12);font-family:'Space Grotesk',system-ui,-apple-system,sans-serif;}
+  .mr-returnbar .mr-wordmark{font-weight:700;font-size:15px;letter-spacing:-.02em;color:#EAECF2;text-decoration:none;}
+  .mr-returnbar .mr-wordmark .mr-dot{color:#D9AC50;}
+  .mr-returnbar .mr-back{font-family:'JetBrains Mono','SFMono-Regular',Menlo,monospace;font-size:12px;color:#969CB0;text-decoration:none;}
+  .mr-returnbar .mr-back:hover{color:#EAECF2;}
+  .mr-returnbar a:focus-visible{outline:2px solid #D9AC50;outline-offset:2px;border-radius:4px;}
+</style>
+<header class="mr-returnbar" aria-label="Site navigation">
+  <a class="mr-wordmark" href="/">mehrab rahman<span class="mr-dot">·</span></a>
+  <a class="mr-back" href="/">&larr; back to site</a>
+</header>
 <div class="wrap">
 
   <!-- Header -->
