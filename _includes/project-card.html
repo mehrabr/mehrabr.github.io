@@ -12,9 +12,9 @@
     {% if p.status == 'shipped' %}shipped{% else %}in progress{% endif %}
   </span>
 
-  <h3 class="project-card__title">
+  <h2 class="project-card__title">
     {% if include.link %}<a href="{{ p.url | relative_url }}">{{ p.title }}</a>{% else %}{{ p.title }}{% endif %}
-  </h3>
+  </h2>
 
   <p class="project-card__pitch">{{ p.pitch }}</p>
 

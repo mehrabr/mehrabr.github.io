@@ -38,6 +38,13 @@ layout: compress
 
     {% include site-footer.html lang=lang %}
 
+    <!-- Chirpy's page JS binds these; keep them present so it initializes cleanly -->
+    <aside aria-label="Scroll to Top">
+      <button id="back-to-top" type="button" class="btn btn-lg btn-box-shadow">
+        <i class="fas fa-angle-up"></i>
+      </button>
+    </aside>
+
     <!-- Embedded scripts (comments, etc.) -->
     {% for _include in layout.script_includes %}
       {% assign _include_path = _include | append: '.html' %}

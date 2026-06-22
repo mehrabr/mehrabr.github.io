@@ -712,6 +712,24 @@ figure.highlight {
   background: transparent;
 }
 
+/* Rouge token contrast on the dark code surface (#23273A): Chirpy's dark
+   line-number gray (#808080, 3.73) and keyword purple (#aa759f, 4.04) miss AA.
+   Scoped to dark so the light syntax theme is untouched. */
+html[data-bs-theme='dark'] .highlight .lineno {
+  color: #969cb0 !important;
+}
+
+html[data-bs-theme='dark'] .highlight .k,
+html[data-bs-theme='dark'] .highlight .kc,
+html[data-bs-theme='dark'] .highlight .kd,
+html[data-bs-theme='dark'] .highlight .kn,
+html[data-bs-theme='dark'] .highlight .kp,
+html[data-bs-theme='dark'] .highlight .kr,
+html[data-bs-theme='dark'] .highlight .kt,
+html[data-bs-theme='dark'] .highlight .kv {
+  color: #cd9bc2 !important;
+}
+
 /* blog post-list cards (also used by /writing/) */
 #post-list .card,
 #post-list .card-wrapper {

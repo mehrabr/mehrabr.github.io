@@ -52,6 +52,9 @@ autopages:
 #   google:
 #     id: G-XXXXXXXXXX
 
+# table of contents on posts (Chirpy default; was unset, which silently disabled it)
+toc: true
+
 # comments — disabled by default, enable when ready
 comments:
   active: ""
