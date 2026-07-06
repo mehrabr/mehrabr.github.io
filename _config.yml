@@ -128,6 +128,7 @@ exclude:
   - LICENSE
   - "*.config.js"
   - package*.json
+  - desi-family-tree/kinship-decoder.jsx
 
 jekyll-archives:
   enabled: [categories, tags]
